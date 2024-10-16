@@ -1,0 +1,53 @@
+.custom-button {
+    border: none;
+    border-radius: 8px;
+    opacity: 1;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0px 15px 30px 0px var(--shadow);
+
+    font-family: 'Poppins';
+    font-weight: 400;
+    text-align: center;
+    background-color: var(--purple);
+    color: var(--white);
+  
+    &.large {
+      width: 163px;
+      height: 48px;
+      font-size: 18px;
+      padding: 12px 52px;
+      gap: 8px;
+    }
+  
+    &.medium {
+      width: 109px;
+      height: 40px;
+      font-size: 16px;
+      padding: 8px 28px;
+      gap: 8px;
+    }
+  
+    &.small {
+      width: 70px;
+      height: 28px;
+      font-size: 14px;
+      padding: 4px 12px;
+      gap: 8px;
+    }
+  
+    &:hover {
+        background-color: #AE60EB;
+    }
+  
+    &:active {
+        background-color: #6A17AB;
+    }
+  
+    &:disabled {
+        background-color: var(--disabled);
+        cursor: not-allowed;
+    }
+  }
+  

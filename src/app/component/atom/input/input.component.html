@@ -1,0 +1,9 @@
+<div class="input-wrapper">
+    <input
+      [ngClass]="size"
+      [attr.disabled]="isDisabled ? true : null"
+      (input)="handleChange($event)"
+      [value]="value"
+    />
+  </div>
+  
