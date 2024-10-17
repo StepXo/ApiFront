@@ -1,8 +1,10 @@
-<app-input
-  [value]="inputValue"
-  [size]="'normal'"
-  [isDisabled]="isInputDisabled"
-  (valueChange)="onValueChange($event)"
-></app-input>
+<app-header></app-header>
 
-<app-button label="Submit" size="large"></app-button>
+<app-form
+  formName = "Mi Formulario de Prueba"
+  [inputItems] = 3
+  [inputTypes] = "['input', 'textarea', 'input']" 
+  [placeholders] = "['Nombre', 'Descripción', 'Email']"
+  [size] = "'normal'"
+  [buttonLabel] = "'Enviar'"
+></app-form>

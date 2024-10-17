@@ -1,1 +1,19 @@
-<p>form works!</p>
+<div class="form-container">
+    <h2>{{ formName }}</h2>
+    
+    <div class="form-item" *ngFor="let index of [].constructor(inputItems); let i = index">
+        <app-input
+        [placeholder]="placeholders[i]"
+        [isTextarea]="inputTypes[i] === 'textarea'"
+        [size]="size"
+        (valueChange)="handleInputChange($event, i)"
+      ></app-input>
+    </div>
+  
+    <app-button
+      [label]="buttonLabel"
+      (click)="submitForm()"
+      [size]="buttonSize"
+    ></app-button>
+  </div>
+  

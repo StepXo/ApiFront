@@ -1,0 +1,12 @@
+<button (click)="toggleMenu()" class="togle-menu">
+    <span *ngIf="!menuVisible" class="menu-icon">≡</span>
+    <span *ngIf="menuVisible" class="close-icon">✖</span>
+</button>
+
+<nav [ngClass]="{'visible': menuVisible}">
+    <ul>
+        <li *ngFor="let item of menuItems">
+            <app-menu [buttonName]=item.name [link]=item.link></app-menu>
+        </li>
+    </ul>
+</nav>

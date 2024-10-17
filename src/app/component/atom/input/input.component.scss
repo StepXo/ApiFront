@@ -1,78 +1,65 @@
-.input {
-    
-    
-    /*display: inline-block;
-    width: 163px;
+.custom-input{
+    border: 2px solid var(--spacer-light);
+    opacity: 1;
     border-radius: 2px;
-    border: 1px solid var(--border); 
     gap: 10px;
+    font-family: 'Poppins';
+    font-weight: 400;
+    width: 100%;
+    box-sizing: border-box;
+    resize: none;
+
+    input {
+        border: none;
+        outline: none;
+        background: transparent;
+        font-size: 14px;
+        resize: none;
+        overflow: auto;
+        width: 100%;
+    }
 
     &.normal {
-        height: 44px; 
+        height: 40px;
         padding: 12px;
-    
         input {
-            width: 139px; 
-            height: 20px; 
-            padding: 0;
-            font-family: 'Poppins';
-            font-size: 14px;
-            font-weight: 400;
-            border: none;
-            outline: none;
-        }
-    }
-  
-    &.small {
-        height: 36px; 
-        padding: 8px 12px; 
-    
-        input {
-            width: 139px; 
             height: 20px;
-            padding: 0;
-            font-family: 'Poppins';
-            font-size: 14px;
-            font-weight: 400;
-            border: none;
-            outline: none;
         }
     }
-  
-    
-    &.default {
-        background-color: var(--white);
-        border: 1px solid var(--spacer_light);
-      
-        &:focus {
-            background-color: var(--purple);
-            border: 1px solid var(--spacer_light);
+
+    &.small {
+        height: 36px;
+        padding: 8px 12px;
+        input {
+            height: 20px;
         }
     }
-    
-    &.filled {
-        background-color: var(--white);
-        border: 1px solid var(--spacer_light);
+
+    input:placeholder-shown {
+        color: var(--border);
     }
-  
-    &.disabled {
+
+    &:focus-within{
+        border-color:var(--purple);
+        outline-color: var(--purple);
+    }
+
+    &:disabled {
         background-color: var(--disabled);
-        border: 1px solid var(--spacer_light);
+        border-color: var(--spacer-light);
         cursor: not-allowed;
-    }
+    } 
   
-    &.error {
-        width: 280px;
+    &:invalid  {
         height: 68px;
-        border: 1px solid var(--error);
+        border-color: var(--error);
         gap: 4px;
     
         &::after {
             content: "Error"; // to do: reemplazar "Error" por el mensaje real
             display: block;
-            width: 280px;
             height: 20px;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Poppins';
             font-size: 14px;
             font-weight: 400;
             line-height: 19.6px;
@@ -80,25 +67,9 @@
             color: var(--error);
         }
     }
-  
-    &.error-filled {
-        width: 280px;
-        height: 68px;
-        border: 1px solid var(--error);
-        gap: 4px;
-  
-    &::after {
-        content: "Error"; // to do: reemplazar "Error" por el mensaje real
-        display: block;
-        width: 280px;
-        height: 20px;
-        font-family: 'Poppins', sans-serif;
-        font-size: 14px;
-        font-weight: 400;
-        line-height: 19.6px;
-        text-align: right;
-        color: var(--error);
-        }
-    }*/
+
+    &::-webkit-scrollbar {
+        height: 0px; 
+    }
 }
   

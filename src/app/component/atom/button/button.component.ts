@@ -7,7 +7,7 @@ import { Component, Input } from '@angular/core';
 })
 export class ButtonComponent {
   @Input() label: string = 'Button';
-  @Input() size: 'large' | 'medium' | 'small' = 'large'; // Tamaños del botón
-  @Input() isDisabled: boolean = false; // Estado de deshabilitado
+  @Input() size: 'large' | 'medium' | 'small' = 'large'; 
+  @Input() isDisabled: boolean = false;
 
 }

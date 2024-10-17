@@ -9,6 +9,8 @@ import { HeaderComponent } from './component/organism/header/header.component';
 import { FooterComponent } from './component/organism/footer/footer.component';
 import { InputComponent } from './component/atom/input/input.component';
 import { LogoComponent } from './component/atom/logo/logo.component';
+import { MenuComponent } from './component/atom/menu/menu.component';
+import { MenuBurgerComponent } from './component/molecule/menu-burger/menu-burger.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +21,8 @@ import { LogoComponent } from './component/atom/logo/logo.component';
     FooterComponent,
     InputComponent,
     LogoComponent,
+    MenuComponent,
+    MenuBurgerComponent,
   ],
   imports: [
     BrowserModule,

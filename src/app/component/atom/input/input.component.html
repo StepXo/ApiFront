@@ -1,9 +1,20 @@
 <div class="input-wrapper">
-    <input
+    <input 
+      *ngIf="!isTextarea"
+      class="custom-input"
       [ngClass]="size"
       [attr.disabled]="isDisabled ? true : null"
       (input)="handleChange($event)"
-      [value]="value"
+      [placeholder]="placeholder" 
     />
-  </div>
-  
+    <textarea 
+      *ngIf="isTextarea"
+      class="custom-input"
+      [ngClass]="size"
+      [attr.disabled]="isDisabled ? true : null"
+      (input)="handleChange($event)"
+      [placeholder]="placeholder" 
+  ></textarea>
+</div>
+
+
