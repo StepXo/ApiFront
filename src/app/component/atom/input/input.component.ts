@@ -15,7 +15,7 @@ export class InputComponent implements AfterViewChecked {
 
   constructor() {}
 
-   handleChange(event: Event): void {
+  handleChange(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
 
     this.valueChange.emit(inputElement.value);

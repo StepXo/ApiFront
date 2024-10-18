@@ -11,6 +11,7 @@ import { InputComponent } from './component/atom/input/input.component';
 import { LogoComponent } from './component/atom/logo/logo.component';
 import { MenuComponent } from './component/atom/menu/menu.component';
 import { MenuBurgerComponent } from './component/molecule/menu-burger/menu-burger.component';
+import { CategoryComponent } from './component/page/category/category.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { MenuBurgerComponent } from './component/molecule/menu-burger/menu-burge
     LogoComponent,
     MenuComponent,
     MenuBurgerComponent,
+    CategoryComponent,
   ],
   imports: [
     BrowserModule,

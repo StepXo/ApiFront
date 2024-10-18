@@ -1,1 +1,17 @@
-<p>footer works!</p>
+<footer>
+    <div class="footer-container">
+      <app-logo alt="Logo" size="large"></app-logo>
+  
+      <div class="footer-contact">
+        <h3>Contact Us</h3>
+        <ul>
+          <li *ngFor="let info of contactInfo">{{ info.label }}: {{ info.value }}</li>
+        </ul>
+      </div>
+    </div>
+  
+    <div class="footer-copyright">
+      <p>&copy; 2024 Your Company. All Rights Reserved.</p>
+    </div>
+  </footer>
+  
