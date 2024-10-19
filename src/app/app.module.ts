@@ -3,34 +3,27 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ButtonComponent } from './component/atom/button/button.component';
-import { FormComponent } from './component/molecule/form/form.component';
-import { HeaderComponent } from './component/organism/header/header.component';
-import { FooterComponent } from './component/organism/footer/footer.component';
-import { InputComponent } from './component/atom/input/input.component';
-import { LogoComponent } from './component/atom/logo/logo.component';
-import { MenuComponent } from './component/atom/menu/menu.component';
-import { MenuBurgerComponent } from './component/molecule/menu-burger/menu-burger.component';
 import { CategoryComponent } from './component/page/category/category.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from './shared/shared.module';
+import { DesignSistemModule } from './component/design-sistem.module';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ButtonComponent,
-    FormComponent,
-    HeaderComponent,
-    FooterComponent,
-    InputComponent,
-    LogoComponent,
-    MenuComponent,
-    MenuBurgerComponent,
     CategoryComponent,
   ],
   imports: [
+    ReactiveFormsModule,
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    SharedModule,
+    DesignSistemModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

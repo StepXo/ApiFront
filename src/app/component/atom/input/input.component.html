@@ -1,20 +1,21 @@
-<div class="input-wrapper">
-    <input 
-      *ngIf="!isTextarea"
-      class="custom-input"
-      [ngClass]="size"
-      [attr.disabled]="isDisabled ? true : null"
-      (input)="handleChange($event)"
-      [placeholder]="placeholder" 
-    />
-    <textarea 
-      *ngIf="isTextarea"
-      class="custom-input"
-      [ngClass]="size"
-      [attr.disabled]="isDisabled ? true : null"
-      (input)="handleChange($event)"
-      [placeholder]="placeholder" 
+<ng-container *ngIf="type === 'textarea'; else inputField">
+  <textarea 
+    class="custom-input"
+    [ngClass]="[size, control.invalid && control.touched ? 'error' : '']"
+    [formControl]="control"
+    [placeholder]="label"
+    [attr.disabled]="isDisabled ? true : null"
+    (input)="adjustTextareaHeight($event)"
   ></textarea>
-</div>
+</ng-container>
 
-
+<ng-template #inputField>
+  <input 
+    class="custom-input"
+    [ngClass]="[size, control.invalid && control.touched ? 'error' : '']"
+    [formControl]="control"
+    [type]="type" 
+    [placeholder]="label"
+    [attr.disabled]="isDisabled ? true : null"
+  />
+</ng-template>

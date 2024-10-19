@@ -1,19 +1,11 @@
-<div class="form-container">
-    <h2>{{ formName }}</h2>
-    
-    <div class="form-item" *ngFor="let index of [].constructor(inputItems); let i = index">
-        <app-input
-        [placeholder]="placeholders[i]"
-        [isTextarea]="inputTypes[i] === 'textarea'"
-        [size]="size"
-        (valueChange)="handleInputChange($event, i)"
-      ></app-input>
-    </div>
-  
-    <app-button
-      [label]="buttonLabel"
-      (click)="submitForm()"
-      [size]="buttonSize"
-    ></app-button>
-  </div>
-  
+<div class="form-item" *ngFor="let field of fields">
+  <app-input 
+    [control]="field.control" 
+    [label]="field.label" 
+    [type]="field.type"
+    [size]="field.size"
+  ></app-input>
+  <app-error-label *ngIf="field.control.invalid && field.control.touched" 
+    [message]="getErrorMessage(field.control)"
+  ></app-error-label>
+</div>

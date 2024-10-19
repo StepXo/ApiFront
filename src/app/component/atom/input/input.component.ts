@@ -1,39 +1,29 @@
-import { Component, Input, Output, EventEmitter, AfterViewChecked } from '@angular/core';
+import { Component, Input,  ElementRef, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
+
 
 @Component({
   selector: 'app-input',
   templateUrl: './input.component.html',
   styleUrls: ['./input.component.scss']
 })
-export class InputComponent implements AfterViewChecked {
-  @Input() placeholder: string = '';
-  @Input() size: 'normal' | 'small' = 'normal';
+export class InputComponent {
+  @Input() control: FormControl = new FormControl();
+  @Input() label: string = '';
+  @Input() type: string = 'text';
+  @Input() errorMessage: string = '';
   @Input() isDisabled: boolean = false;
-  @Input() isTextarea: boolean = true;
+  @Input() size: 'normal' | 'small' = 'normal';
 
-  @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
+  @ViewChild('textareaElement') textarea!: ElementRef;
 
-  constructor() {}
+  adjustTextareaHeight(event: Event): void {
 
-  handleChange(event: Event): void {
-    const inputElement = event.target as HTMLInputElement;
+    const textarea = event.target as HTMLTextAreaElement;
 
-    this.valueChange.emit(inputElement.value);
-
-    if (this.isTextarea && inputElement instanceof HTMLTextAreaElement) {
-      this.adjustTextareaHeight(inputElement);
-    }
-  }
-
-  private adjustTextareaHeight(textarea: HTMLTextAreaElement): void {
-    textarea.style.height = 'auto';  
+    textarea.style.height = 'auto';
     textarea.style.height = `${textarea.scrollHeight}px`;
   }
 
-  ngAfterViewChecked(): void {
-    const textarea = document.querySelector('textarea') as HTMLTextAreaElement;
-    if (textarea) {
-      this.adjustTextareaHeight(textarea);
-    }
-  }
 }
+
