@@ -1,23 +1,29 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormComponent } from './form/form.component';
 import { MenuBurgerComponent } from './menu-burger/menu-burger.component';
 import { AtomModule } from '../atom/atom.module';
+import { InputGroupComponent } from './input-group/input-group.component';
+import { TableComponent } from './table/table.component';
+import { PaginationComponent } from './pagination/pagination.component';
 
 
 
 @NgModule({
   declarations: [
-    FormComponent,
-    MenuBurgerComponent
+    MenuBurgerComponent,
+    InputGroupComponent,
+    TableComponent,
+    PaginationComponent
   ],
   imports: [
     CommonModule,
     AtomModule
   ],
   exports:[
-    FormComponent,
-    MenuBurgerComponent
+    MenuBurgerComponent,
+    InputGroupComponent,
+    TableComponent,
+    PaginationComponent
   ]
 })
 export class MoleculeModule { }

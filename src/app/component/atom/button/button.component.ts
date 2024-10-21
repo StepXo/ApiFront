@@ -9,5 +9,6 @@ export class ButtonComponent {
   @Input() label: string = 'Button';
   @Input() size: 'large' | 'medium' | 'small' = 'large'; 
   @Input() isDisabled: boolean = false;
+  @Input() route: string = ""
 
 }

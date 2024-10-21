@@ -6,6 +6,8 @@ import { LogoComponent } from './logo/logo.component';
 import { MenuComponent } from './menu/menu.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ErrorLabelComponent } from './error-label/error-label.component';
+import { PaginationButtonComponent } from './pagination-button/pagination-button.component';
+import { RouterModule } from '@angular/router';
 
 
 
@@ -15,18 +17,21 @@ import { ErrorLabelComponent } from './error-label/error-label.component';
     InputComponent,
     LogoComponent,
     MenuComponent,
-    ErrorLabelComponent
+    ErrorLabelComponent,
+    PaginationButtonComponent,
   ],
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterModule
   ],
   exports:[
     ButtonComponent,
     InputComponent,
     LogoComponent,
     MenuComponent,
-    ErrorLabelComponent
+    ErrorLabelComponent,
+    PaginationButtonComponent
   ]
 })
 export class AtomModule { }

@@ -3,8 +3,6 @@ import { FormControl, FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { CategoryService } from 'src/app/shared/service/category/category.service'; 
 import { ValidationsComponent } from 'src/app/shared/utils/validations/validations.component';
 
-
-
 @Component({
   selector: 'app-category-form',
   templateUrl: './category-form.component.html',
@@ -13,7 +11,7 @@ import { ValidationsComponent } from 'src/app/shared/utils/validations/validatio
 export class CategoryFormComponent  {
   formName: string = "Crear Categoria";
   form: FormGroup;
-  formFields: {control:FormControl, label: string, type:string, size:'normal' | 'small'}[];
+  formFields: {control:FormControl, label: string, type:string, size:'normal' | 'small', message:string | null }[];
   buttonLabel: string = 'Enviar'
   errorMessage: string | null = null;
 
@@ -24,12 +22,23 @@ export class CategoryFormComponent  {
     });
 
     this.formFields = [
-      {control: this.form.get('name') as FormControl, label: 'Nombre',type:'input',size:'normal'},
-      {control: this.form.get('description') as FormControl, label: 'Descripción',type:'textarea',size:'normal'},
+      {control: this.form.get('name') as FormControl, 
+        label: 'Nombre',type:'input',
+        size:'normal', 
+        message: this.getErrorMessage(this.form.get('name') as FormControl)},
+      {control: this.form.get('description') as FormControl, 
+        label: 'Descripción',
+        type:'textarea',size:'normal', 
+        message: this.getErrorMessage(this.form.get('description') as FormControl)},
     ];
   }
+  
   get isDisabled(): boolean {
     return !this.form.valid;
+  }
+
+  getErrorMessage(control: FormControl): string | null {
+    return ValidationsComponent.validateInput(control);
   }
 
   onSubmit() {
@@ -37,10 +46,10 @@ export class CategoryFormComponent  {
     const categoryData = this.form.value;
     this.categoryService.createCategory(categoryData).subscribe({
       next: () => {
-        console.log('Categoria creada');
+        this.form.reset();
       },
       error: (error) => {
-        this.errorMessage = ValidationsComponent.validateCategory(error);      }
+        this.errorMessage = ValidationsComponent.validateCategory(error);}
     });
   }
 }

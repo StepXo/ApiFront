@@ -14,22 +14,22 @@
     color: var(--white);
   
     &.large {
-      width: 163px;
-      height: 48px;
+      min-width: 163px;
+      min-height: 48px;
       font-size: 18px;
       padding: 12px 52px;
     }
   
     &.medium {
-      width: 109px;
-      height: 40px;
+      min-width: 109px;
+      min-height: 40px;
       font-size: 16px;
       padding: 8px 28px;
     }
   
     &.small {
-      width: 70px;
-      height: 28px;
+      min-width: 70px;
+      min-height: 28px;
       font-size: 14px;
       padding: 4px 12px;
       gap: 8px;

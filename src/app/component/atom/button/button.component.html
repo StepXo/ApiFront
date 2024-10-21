@@ -1,7 +1,10 @@
 <button 
   class="custom-button" 
   [ngClass]="size" 
-  [disabled]="isDisabled">
+  [disabled]="isDisabled"
+  [routerLink] ="route"
+  >
   {{ label }}
+  
 </button>
 

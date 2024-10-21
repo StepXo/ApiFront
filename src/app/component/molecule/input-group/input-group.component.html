@@ -1,0 +1,11 @@
+<div class="form-item" *ngFor="let field of fields">
+    <app-input 
+        [control]="field.control" 
+        [label]="field.label" 
+        [type]="field.type"
+        [size]="field.size"
+    ></app-input>
+    <app-error-label *ngIf="field.control.invalid && field.control.touched" 
+        [message]="field.message"
+    ></app-error-label>
+</div>

@@ -1,0 +1,17 @@
+<div class="home-container">
+    <h1>Bienvenido</h1>
+    <div class="button-group">
+        <app-button
+        label= "Categorias"
+        size = "large"
+        route = "/category"
+    ></app-button>
+    <div class="button-group">
+        <app-button
+        label= "Marcas"
+        size = "large"
+        [isDisabled]="isDisabled"
+        route = "/brand"
+    ></app-button>
+    </div>
+</div>
