@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { EnumSize } from 'src/app/shared/constant/enumSize';
+import { PageConstants } from 'src/app/shared/constant/stringConstants/pageConstants';
 
 @Component({
   selector: 'app-home',
@@ -11,10 +12,9 @@ export class HomeComponent {
   isDisabled: boolean = true; 
 
   buttons = [
-    { label: 'Categorias', size: EnumSize.Large, route: '/category' },
-    { label: 'Marcas', size: EnumSize.Large, route: '/brand', isDisabled: this.isDisabled },
-    { label: 'Articulos', size: EnumSize.Large, route: '/item', isDisabled: this.isDisabled },
-
-  ];
+    { label: PageConstants.CATEGORY_LABEL, size: EnumSize.Large, route: PageConstants.CATEGORY_ROUTE },
+    { label: PageConstants.BRAND_LABEL, size: EnumSize.Large, route: PageConstants.BRAND_ROUTE },
+    { label: PageConstants.ITEM_LABEL, size: EnumSize.Large, route: PageConstants.ITEM_ROUTE, isDisabled: this.isDisabled },
+];
 
 }

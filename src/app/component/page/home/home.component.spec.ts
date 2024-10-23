@@ -50,7 +50,7 @@ describe('HomeComponent', () => {
     expect(secondButton.label).toBe('Marcas');
     expect(secondButton.size).toBe(EnumSize.Large);
     expect(secondButton.route).toBe('/brand');
-    expect(secondButton.isDisabled).toBe(true);
+    expect(secondButton.isDisabled).toBe(false);
     
     expect(thirdButton.label).toBe('Articulos');
     expect(thirdButton.size).toBe(EnumSize.Large);

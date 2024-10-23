@@ -22,6 +22,11 @@ export class FullTableComponent implements OnChanges {
       this.updateTableValues();
     }
   }
+  onTableSizeChange(newSize: number): void {
+    this.pagination.size = newSize;  
+    this.pagination.page = 1;
+    this.loadData();
+  }
 
   onPageChange(): void {
     this.loadData();

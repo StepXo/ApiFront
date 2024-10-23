@@ -1,16 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { EnumSize } from 'src/app/shared/constant/enumSize';
 import { PageConstants } from 'src/app/shared/constant/stringConstants/pageConstants';
-import { Category } from 'src/app/shared/models/category';
-import { CategoryService } from 'src/app/shared/service/category/category.service';
+import { Brand } from 'src/app/shared/models/brand';
+import { BrandService } from 'src/app/shared/service/brand/brand.service';
 
 @Component({
-  selector: 'app-category',
-  templateUrl: './category.component.html',
-  styleUrls: ['./category.component.scss']
+  selector: 'app-brand',
+  templateUrl: './brand.component.html',
+  styleUrls: ['./brand.component.scss']
 })
-export class CategoryComponent   {
-  formName = PageConstants.FORM_NAME_C;
+export class BrandComponent implements OnInit {
+  formName = PageConstants.FORM_NAME_M;
   button = {
     label:PageConstants.BUTTON_LABEL,
     size: EnumSize.Medium
@@ -19,7 +19,7 @@ export class CategoryComponent   {
   formFieldsConfig = [
     {
       name: PageConstants.NAME,
-      label:PageConstants.LABEL_NAME,
+      label: PageConstants.LABEL_NAME,
       type: PageConstants.INPUT,
       size: EnumSize.Medium,
       validations: {
@@ -37,12 +37,12 @@ export class CategoryComponent   {
       validations: {
         required: true,
         min: PageConstants.MIN_LENGTH, 
-        max: PageConstants.MAX_DESCRIPTION_LENGTH_1
+        max: PageConstants.MAX_DESCRIPTION_LENGTH_2
       }
     },
   ];
 
-  categories: Category[] = [];
+  brands: Brand[] = [];
 
   labels: string[] = [PageConstants.ID, 
     PageConstants.LABEL_NAME.toUpperCase(), 
@@ -56,20 +56,20 @@ export class CategoryComponent   {
     order: PageConstants.ORDER
   }
 
-  constructor(private readonly categoryService: CategoryService) {}
+  constructor(private readonly brandService: BrandService) {}
 
   ngOnInit(): void {
     this.loadData(this.pagination.page, this.pagination.size, this.pagination.order);
   }
 
   loadData(page: number, size: number,order: string = this.pagination.order): void {
-    this.categoryService.getCategories(page - PageConstants.FIRST, size, order).subscribe({
+    this.brandService.getBrands(page - PageConstants.FIRST, size, order).subscribe({
       next: (paginationData) => {
-        this.categories = paginationData.content;
+        this.brands = paginationData.content;
         this.pagination.totalPages = paginationData.totalPages;
       },
       error: (error) => {
-        console.error(PageConstants.ERROR_CATEGORIES, error);
+        console.error(PageConstants.ERROR_BRANDS, error);
       }
     });
   }
@@ -84,5 +84,6 @@ export class CategoryComponent   {
     this.pagination.page = newPage;
     this.loadData(this.pagination.page, this.pagination.size);
   }
+  
 
 }

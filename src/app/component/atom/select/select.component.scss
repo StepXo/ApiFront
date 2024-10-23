@@ -1,0 +1,31 @@
+.custom-select {
+    border: 2px solid var(--spacer-light);
+    border-radius: 2px;
+    gap: 10px;
+    font-family: 'Poppins';
+    font-weight: 400;
+
+    margin-top: 3px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    background-color: var(--white);
+    text-align: left;
+    
+    padding: 8px; 
+
+    &:active {
+        color: #6A17AB;
+    }
+
+    &.active {
+        color: var(--purple);
+    }
+    option {
+        padding: 12px;
+        &:checked {
+            color: var(--purple); 
+            background-color: var(--white); 
+        }
+    }
+}

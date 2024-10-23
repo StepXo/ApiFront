@@ -4,7 +4,7 @@ import { ValidationsComponent } from './utils/validations/validations.component'
 
 @NgModule({
   declarations: [
-    ValidationsComponent
+    ValidationsComponent,    
   ],
   imports: [
     CommonModule

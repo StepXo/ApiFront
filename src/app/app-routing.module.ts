@@ -8,7 +8,11 @@ const routes: Routes = [
   },
   {path: 'category',
     loadChildren:() => import('./component/page/category/category.module').then(x=>x.CategoryModule)
-  }
+  },
+  {path: 'brand',
+    loadChildren:() => import('./component/page/brand/brand.module').then(x=>x.BrandModule)
+  },
+  { path: '**', redirectTo: '/home' }
 ];
 
 @NgModule({

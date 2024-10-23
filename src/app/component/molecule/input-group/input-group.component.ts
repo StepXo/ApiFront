@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { FormField } from 'src/app/shared/models/FormField';
+import { FormField } from 'src/app/shared/models/formField';
 
 
 @Component({

@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LogoComponent } from './logo.component';
 import { By } from '@angular/platform-browser';
+import { EnumSize } from 'src/app/shared/constant/enumSize';
 
 describe('LogoComponent', () => {
   let component: LogoComponent;
@@ -36,7 +37,7 @@ describe('LogoComponent', () => {
   });
 
   it('should apply the correct size class', () => {
-    component.size = 'medium';
+    component.size = EnumSize.Medium;
     fixture.detectChanges(); 
 
     const imgElement = fixture.debugElement.query(By.css('img'));

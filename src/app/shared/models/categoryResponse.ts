@@ -1,10 +1,10 @@
-import { CategoryDto } from './category';
+import { Category } from './category';
 
 export interface CategoryResponse {
-    content: CategoryDto[];
-    totalElements: number;
-    totalPages: number;
-    first: boolean;
-    last: boolean;
-    size: number;
-  }
+  content: Category[];
+  totalElements: number;
+  totalPages: number;
+  first: boolean;
+  last: boolean;
+  size: number;
+}

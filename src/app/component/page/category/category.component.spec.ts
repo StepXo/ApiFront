@@ -2,15 +2,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CategoryComponent } from './category.component';
 import { CategoryService } from 'src/app/shared/service/category/category.service';
 import { of, throwError } from 'rxjs';
-import { EnumSize } from 'src/app/shared/constant/enumSize';
-import { CategoryDto } from 'src/app/shared/models/category';
+import { Category } from 'src/app/shared/models/category';
 
 describe('CategoryComponent', () => {
   let component: CategoryComponent;
   let fixture: ComponentFixture<CategoryComponent>;
   let categoryService: jest.Mocked<CategoryService>;
 
-  const mockCategories: CategoryDto[] = [
+  const mockCategories: Category[] = [
     { id: 1, name: 'Category 1', description: 'Description 1' },
     { id: 2, name: 'Category 2', description: 'Description 2' },
   ];
@@ -57,6 +56,7 @@ describe('CategoryComponent', () => {
   it('should handle error when loading data', () => {
     console.error = jest.fn();
     categoryService.getCategories.mockReturnValue(throwError('Error fetching categories'));
+    
 
     component.loadData(1, 5, 'asc');
 
