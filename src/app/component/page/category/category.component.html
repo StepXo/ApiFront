@@ -7,6 +7,9 @@
         [formName]="formName"
         [button]="button"
         [formFieldsConfig]="formFieldsConfig"
+        [errorMessage] = "errorMessage"
+        (formSubmit)="onFormSubmit($event)"
+
     ></app-form>
 
     <app-full-table 
@@ -14,8 +17,8 @@
         [data]="categories" 
         [pagination]="pagination" 
         [loadDataFunction]="loadData.bind(this)"
-        (sortChange)="onSortChange($event)">
-    </app-full-table>
+        (sortChange)="onSortChange($event)"
+    ></app-full-table>
 </div>
 
 <app-footer></app-footer>

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { EnumSize } from 'src/app/shared/constant/enumSize';
 import { OrganismConstants } from 'src/app/shared/constant/stringConstants/organismConstants';
@@ -19,9 +19,11 @@ export class FormComponent  implements OnInit {
   @Input() formName: string = OrganismConstants.EMPTY;
   @Input() button:{label: string, size:EnumSize} = {label:OrganismConstants.EMPTY,size:EnumSize.Medium};
 
+  @Output() formSubmit = new EventEmitter<any>();
+
   form: FormGroup;
   formFields: FormField[] = [];
-  errorMessage: string | null = null;
+  @Input() errorMessage: string | null = null;
 
   constructor(private readonly fb: FormBuilder, private readonly categoryService: CategoryService) {
     this.form = this.fb.group({}); 
@@ -85,14 +87,9 @@ export class FormComponent  implements OnInit {
   onSubmit() {
     this.errorMessage = null;
     if (!this.form.valid) return;
-    const categoryData = this.form.value;
-    this.categoryService.createCategory(categoryData).subscribe({
-      next: () => {
-        this.form.reset();
-      },
-      error: (error) => {
-        this.errorMessage = ValidationsComponent.validateCategory(error);
-      }
-    });
+    const data = this.form.value;
+    console.log(data)
+    this.formSubmit.emit(data); 
+    this.form.reset();
   }
 }

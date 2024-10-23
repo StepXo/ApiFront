@@ -7,6 +7,8 @@
         [formName]="formName"
         [button]="button"
         [formFieldsConfig]="formFieldsConfig"
+        [errorMessage] = "errorMessage"
+        (formSubmit)="onFormSubmit($event)"
     ></app-form>
 
     <app-full-table 
