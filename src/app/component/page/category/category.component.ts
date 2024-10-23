@@ -3,6 +3,7 @@ import { EnumSize } from 'src/app/shared/constant/enumSize';
 import { PageConstants } from 'src/app/shared/constant/stringConstants/pageConstants';
 import { Category } from 'src/app/shared/models/category';
 import { CategoryService } from 'src/app/shared/service/category/category.service';
+import { ValidationsComponent } from 'src/app/shared/utils/validations/validations.component';
 
 @Component({
   selector: 'app-category',
@@ -15,6 +16,7 @@ export class CategoryComponent   {
     label:PageConstants.BUTTON_LABEL,
     size: EnumSize.Medium
   };
+  errorMessage: string | null = null;
 
   formFieldsConfig = [
     {
@@ -85,4 +87,15 @@ export class CategoryComponent   {
     this.loadData(this.pagination.page, this.pagination.size);
   }
 
+  onFormSubmit(categoryData: any) {
+    console.log(categoryData);
+    this.categoryService.createCategory(categoryData).subscribe({
+        next: () => {
+            this.loadData(this.pagination.page, this.pagination.size, this.pagination.order);
+        },
+        error: (error) => {
+            this.errorMessage = ValidationsComponent.validateCategory(error);
+        }
+    });
+  }
 }

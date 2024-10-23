@@ -3,6 +3,7 @@ import { EnumSize } from 'src/app/shared/constant/enumSize';
 import { PageConstants } from 'src/app/shared/constant/stringConstants/pageConstants';
 import { Brand } from 'src/app/shared/models/brand';
 import { BrandService } from 'src/app/shared/service/brand/brand.service';
+import { ValidationsComponent } from 'src/app/shared/utils/validations/validations.component';
 
 @Component({
   selector: 'app-brand',
@@ -15,6 +16,7 @@ export class BrandComponent implements OnInit {
     label:PageConstants.BUTTON_LABEL,
     size: EnumSize.Medium
   };
+  errorMessage: string | null = null;
 
   formFieldsConfig = [
     {
@@ -85,5 +87,16 @@ export class BrandComponent implements OnInit {
     this.loadData(this.pagination.page, this.pagination.size);
   }
   
+
+  onFormSubmit(data: any) {
+    this.brandService.createBrand(data).subscribe({
+        next: () => {
+          this.loadData(this.pagination.page, this.pagination.size, this.pagination.order);
+        },
+        error: (error) => {
+          this.errorMessage = ValidationsComponent.validateCategory(error);
+        }
+    });
+  }
 
 }

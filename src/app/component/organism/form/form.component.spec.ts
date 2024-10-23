@@ -1,7 +1,6 @@
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormComponent } from './form.component';
-import { of, throwError } from 'rxjs';
 import { By } from '@angular/platform-browser';
 import { ErrorLabelComponent } from '../../atom/error-label/error-label.component';
 import { InputGroupComponent } from '../../molecule/input-group/input-group.component';
@@ -29,8 +28,6 @@ describe('FormComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(FormComponent);
     component = fixture.componentInstance;
-    categoryService = TestBed.inject(CategoryService) as unknown as MockCategoryService;
-
     component.formFieldsConfig = [
       {
         name: 'name',
@@ -87,29 +84,28 @@ describe('FormComponent', () => {
     expect(button.componentInstance.isDisabled).toBe(false);
   });
 
-  it('should call createCategory and reset the form on successful submission', () => {
+  it('should emit form data and reset the form on successful submission', () => {
     component.form.controls['name'].setValue('Valid Name');
     component.form.controls['description'].setValue('Valid Description');
 
-    categoryService.createCategory.mockReturnValue(of({}));
+    component.formSubmit.subscribe((data) => {
+      expect(data).toEqual({ name: 'Valid Name', description: 'Valid Description' });
+    });
+
     component.onSubmit();
-    
-    expect(categoryService.createCategory).toHaveBeenCalledWith({ name: 'Valid Name', description: 'Valid Description' });
+
     expect(component.form.value).toEqual({ name: null, description: null });
   });
 
-  it('should set error message on failed submission', fakeAsync(() => {
-    component.form.controls['name'].setValue('Valid Name');
+  it('should not emit form data and reset the form if it is invalid', () => {
+    component.form.controls['name'].setValue('');
     component.form.controls['description'].setValue('Valid Description');
     
-    const errorResponse = { status: 409 };
-    categoryService.createCategory.mockReturnValue(throwError(() => errorResponse));
-  
     component.onSubmit();
-    tick();
-  
-    expect(component.errorMessage).toBe('Ya existe una categoría con ese nombre.');
-  }));
+
+    expect(component.formSubmit.observed).toBeFalsy();
+    expect(component.form.value).toEqual({ name: '', description: 'Valid Description' });
+  });
 
   it('should display error message if present', () => {
     component.errorMessage = 'Some error occurred';
@@ -118,33 +114,4 @@ describe('FormComponent', () => {
     expect(errorLabel).toBeTruthy();
     expect(errorLabel.componentInstance.message).toBe('Some error occurred');
   });
-
-  it('should submit the form and call createCategory when form is valid', () => {
-    // Mock the form values
-    component.form.setValue({ name: 'Test Category', description: 'Test Description' });
-    categoryService.createCategory.mockReturnValue(of({}));
-
-    component.onSubmit();
-
-    expect(categoryService.createCategory).toHaveBeenCalledWith({ name: 'Test Category', description: 'Test Description' });
-    expect(component.form.value).toEqual({ name: null, description: null });
-    expect(component.errorMessage).toBeNull(); 
-  });
-
-  it('should not submit the form when it is invalid', () => {
-    component.form.setValue({ name: '', description: 'Test Description' }); 
-    component.onSubmit();
-
-    expect(categoryService.createCategory).not.toHaveBeenCalled(); 
-  });
-
-  it('should handle errors when createCategory fails', () => {
-    const mockError = { status: 409 }; 
-    categoryService.createCategory.mockReturnValue(throwError(() => mockError));
-
-    component.form.setValue({ name: 'Test Category', description: 'Test Description' });
-    component.onSubmit();
-
-    expect(component.errorMessage).toBe('Ya existe una categoría con ese nombre.'); 
-});
 });
