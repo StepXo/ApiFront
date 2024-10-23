@@ -3,6 +3,7 @@ import { BrandComponent } from './brand.component';
 import { BrandService } from 'src/app/shared/service/brand/brand.service'; 
 import { of, throwError } from 'rxjs';
 import { Brand } from 'src/app/shared/models/brand'; 
+import { ValidationsComponent } from 'src/app/shared/utils/validations/validations.component';
 
 describe('BrandComponent', () => { 
   let component: BrandComponent; 
@@ -26,6 +27,7 @@ describe('BrandComponent', () => {
   beforeEach(async () => {
     const brandServiceMock = { 
       getBrands: jest.fn(), 
+      createBrand: jest.fn(),
     };
 
     await TestBed.configureTestingModule({
@@ -79,5 +81,32 @@ describe('BrandComponent', () => {
     expect(component.pagination.order).toBe('desc');
     expect(component.pagination.page).toBe(1);
     expect(brandService.getBrands).toHaveBeenCalledWith(0, 5, 'desc'); 
+  });
+
+  it('should call createBrand and reload data on successful submission', () => {
+    const formData = { name: 'Test Brand', description: 'Brand description' };
+    const createdBrand: Brand = { id: 3, name: 'Test Brand', description: 'Brand description' }; 
+
+    brandService.createBrand.mockReturnValue(of(createdBrand)); 
+    brandService.getBrands.mockReturnValue(of(mockBrandResponse));
+
+    component.onFormSubmit(formData);
+
+    expect(brandService.createBrand).toHaveBeenCalledWith(formData);
+    expect(brandService.getBrands).toHaveBeenCalledTimes(1); 
+    expect(component.brands).toEqual(mockBrands);
+});
+
+  it('should handle error when createBrand fails', () => {
+    const formData = { name: 'Test Brand', description: 'Brand description' };
+    const errorResponse = { message: 'An error occurred' };
+
+    brandService.createBrand.mockReturnValue(throwError(() => errorResponse));
+    jest.spyOn(ValidationsComponent, 'validateCategory').mockReturnValue('Validation error occurred');
+
+    component.onFormSubmit(formData);
+
+    expect(brandService.createBrand).toHaveBeenCalledWith(formData);
+    expect(component.errorMessage).toBe('Validation error occurred');
   });
 });
