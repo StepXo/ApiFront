@@ -1,22 +1,22 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { CategoryService } from './category.service';
-import { Category } from '../../models/category';
-import { CategoryResponse } from '../../models/categoryResponse';
+import { BrandService } from './brand.service';
+import { Brand } from '../../models/brand';
+import { BrandResponse } from '../../models/brandResponse';
 import { environment } from 'src/environments/environment';
 
-describe('CategoryService', () => {
-  let service: CategoryService;
+describe('BrandService', () => {
+  let service: BrandService;
   let httpMock: HttpTestingController;
 
-  const mockApiUrl = `${environment.apiStock}/category`;
+  const mockApiUrl = `${environment.apiStock}/brand`;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [CategoryService]
+      providers: [BrandService]
     });
-    service = TestBed.inject(CategoryService);
+    service = TestBed.inject(BrandService);
     httpMock = TestBed.inject(HttpTestingController);
   });
 
@@ -28,22 +28,22 @@ describe('CategoryService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should create a category', () => {
-    const mockCategory: Category = { id: 1, name: 'Test Category', description: 'Test Description' };
+  it('should create a brand', () => {
+    const mockBrand: Brand = { id: 1, name: 'Test Brand', description: 'Test Description' };
 
-    service.createCategory({ name: 'Test Category', description: 'Test Description' }).subscribe(response => {
-      expect(response).toEqual(mockCategory);
+    service.createBrand({ name: 'Test Brand', description: 'Test Description' }).subscribe(response => {
+      expect(response).toEqual(mockBrand);
     });
 
     const req = httpMock.expectOne(mockApiUrl);
     expect(req.request.method).toBe('POST');
     expect(req.request.headers.get('Authorization')).toBe(`Bearer ${service.bearer}`);
-    req.flush(mockCategory); 
+    req.flush(mockBrand); 
   });
 
-  it('should get categories', () => {
-    const mockResponse: CategoryResponse = {
-      content: [{ id: 1, name: 'Category 1', description: 'Description 1' }],
+  it('should get brands', () => {
+    const mockResponse: BrandResponse = {
+      content: [{ id: 1, name: 'Brand 1', description: 'Description 1' }],
       totalElements: 1,
       totalPages: 1,
       first: true,
@@ -51,7 +51,7 @@ describe('CategoryService', () => {
       size: 1
     };
 
-    service.getCategories(0, 1).subscribe(response => {
+    service.getBrands(0, 1).subscribe(response => {
       expect(response).toEqual(mockResponse);
     });
 

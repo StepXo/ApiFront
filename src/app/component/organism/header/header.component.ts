@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { EnumSize } from 'src/app/shared/constant/enumSize';
+import { OrganismConstants } from 'src/app/shared/constant/stringConstants/organismConstants';
 
 @Component({
   selector: 'app-header',
@@ -7,9 +9,12 @@ import { Component } from '@angular/core';
 })
 export class HeaderComponent {
   menuItems = [
-    { name: 'Inicio', link: '/home' },
-    { name: 'Categorias', link: '/category' },
-    { name: 'Marcas', link: '/brand' },
-    { name: 'Articulos', link: '/Item' },
-  ];
+    { name: OrganismConstants.HOME, link: OrganismConstants.HOME_PATH },
+    { name: OrganismConstants.CATEGORY, link: OrganismConstants.CATEGORY_PATH },
+    { name: OrganismConstants.BRAND, link: OrganismConstants.BRAND_PATH },
+    { name: OrganismConstants.ITEM, link: OrganismConstants.ITEM_PATH },
+];
+  size = EnumSize.Medium
+
+
 }

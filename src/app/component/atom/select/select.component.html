@@ -1,0 +1,7 @@
+<select class="custom-select"
+    [value]="selectedValue || ''" (change)="onSelectionChange($event)">
+    <option value="" disabled hidden>{{ placeholder }}</option>
+    <option *ngFor="let option of options" [value]="option.value">
+        {{ option.label }}
+    </option>
+</select>

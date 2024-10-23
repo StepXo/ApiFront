@@ -1,0 +1,21 @@
+<app-header></app-header>
+
+<div class="app-container">
+    
+    <app-form 
+        class="brand-form"
+        [formName]="formName"
+        [button]="button"
+        [formFieldsConfig]="formFieldsConfig"
+    ></app-form>
+
+    <app-full-table 
+        [labels]="labels" 
+        [data]="brands" 
+        [pagination]="pagination" 
+        [loadDataFunction]="loadData.bind(this)"
+        (sortChange)="onSortChange($event)">
+    </app-full-table>
+</div>
+
+<app-footer></app-footer>

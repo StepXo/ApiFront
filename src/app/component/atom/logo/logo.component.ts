@@ -1,4 +1,6 @@
 import { Component, Input  } from '@angular/core';
+import { EnumSize } from 'src/app/shared/constant/enumSize';
+import { AtomConstants } from 'src/app/shared/constant/stringConstants/atomConstants';
 
 @Component({
   selector: 'app-logo',
@@ -7,12 +9,8 @@ import { Component, Input  } from '@angular/core';
 })
 export class LogoComponent {
 
-  constructor() { }
-  src: string = 'assets/images/logo.png'; 
-  @Input() alt: string = 'Logo'; 
-  @Input() size: 'large' | 'medium' | 'small' = 'large'; 
-
-  ngOnInit(): void {
-  }
+  src: string = AtomConstants.SRC; 
+  @Input() alt: string = AtomConstants.EMPTY; 
+  @Input() size: EnumSize = EnumSize.Medium; 
 
 }

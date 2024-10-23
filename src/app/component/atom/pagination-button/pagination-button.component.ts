@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { AtomConstants } from 'src/app/shared/constant/stringConstants/atomConstants';
 
 @Component({
   selector: 'app-pagination-button',
@@ -7,7 +8,7 @@ import { Component, Input } from '@angular/core';
 })
 export class PaginationButtonComponent {
 
-  @Input() label: string = 'Button';
+  @Input() label: string = AtomConstants.EMPTY;
   @Input() isActive: boolean = false;
 
 }

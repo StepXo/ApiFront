@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { MoleculeConstants } from 'src/app/shared/constant/stringConstants/moleculeConstants';
 
 @Component({
   selector: 'app-pagination',
@@ -7,33 +8,37 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 })
 export class PaginationComponent {
 
-  @Input() page: number = 1; 
-  @Input() totalPages: number = 1;
+  @Input() page: number = MoleculeConstants.ONE; 
+  @Input() totalPages: number = MoleculeConstants.ONE;
   @Output() pageChange = new EventEmitter<number>();
   @Output() sortChange = new EventEmitter<string>();
+  @Output() sizeChange = new EventEmitter<number>();
+  @Output() tableSizeChange = new EventEmitter<number>();
 
-
+  tableSizes = [
+    { value: 5, label: '5' },
+    { value: 10, label: '10' },
+  ];
   pages: (number | string)[] = [];
   isAscending: boolean = true;
-
 
   updateVisiblePages(): void {
     const pagesArray: (number | string)[] = [];
   
-    if (this.totalPages <= 5) {
+    if (this.totalPages <= MoleculeConstants.FIVE) {
       this.addAllPages(pagesArray);
     } else {
-      pagesArray.push(1);
+      pagesArray.push(MoleculeConstants.ONE);
   
-      if (this.page > 3) {
-        pagesArray.push('...');
+      if (this.page > MoleculeConstants.THREE) {
+        pagesArray.push(MoleculeConstants.SPACER);
       }
   
       const range = this.calculateRange();
       this.addMiddlePages(pagesArray, range);
   
       if (this.shouldAddEllipsis()) {
-        pagesArray.push('...');
+        pagesArray.push(MoleculeConstants.SPACER);
       }
   
       pagesArray.push(this.totalPages);
@@ -43,40 +48,40 @@ export class PaginationComponent {
   }
   
   private addAllPages(pagesArray: (number | string)[]): void {
-    for (let i = 1; i <= this.totalPages; i++) {
+    for (let i = MoleculeConstants.ONE; i <= this.totalPages; i++) {
       pagesArray.push(i);
     }
   }
   
   private calculateRange(): number {
-    let range = 1;
+    let range = MoleculeConstants.ONE;
   
-    if (this.page < 4) {
-      range = 4 - this.page;
+    if (this.page < MoleculeConstants.FOUR) {
+      range = MoleculeConstants.FOUR - this.page;
     }
   
-    if (this.page > this.totalPages - 3) {
-      range = 4 + this.page - this.totalPages;
+    if (this.page > this.totalPages - MoleculeConstants.THREE) {
+      range = MoleculeConstants.FOUR + this.page - this.totalPages;
     }
   
     return range;
   }
   
   private addMiddlePages(pagesArray: (number | string)[], range: number): void {
-    const start = Math.max(2, this.page - range);
-    const end = Math.min(this.totalPages - 1, this.page + range);
+    const start = Math.max(MoleculeConstants.TWO, this.page - range);
+    const end = Math.min(this.totalPages - MoleculeConstants.ONE, this.page + range);
     
     for (let i = start; i <= end; i++) {
       pagesArray.push(i);
     }
   
-    if (this.page + 2 === this.totalPages - 1) {
-      pagesArray.push(this.page + 2);
+    if (this.page + MoleculeConstants.TWO === this.totalPages - MoleculeConstants.ONE) {
+      pagesArray.push(this.page + MoleculeConstants.TWO);
     }
   }
   
   private shouldAddEllipsis(): boolean {
-    return this.page  < this.totalPages - 2;
+    return this.page  < this.totalPages - MoleculeConstants.THREE;
   }
 
   ngOnChanges(): void {
@@ -92,7 +97,7 @@ export class PaginationComponent {
   }
 
   loadPreviousPage(): void {
-    if (this.page > 1) {
+    if (this.page > MoleculeConstants.ONE) {
       this.page--;
       this.pageChange.emit(this.page)
       this.updateVisiblePages();
@@ -109,7 +114,12 @@ export class PaginationComponent {
 
   toggleSortOrder(): void {
     this.isAscending = !this.isAscending; 
-    const order = this.isAscending ? 'asc' : 'desc'; 
+    const order = this.isAscending ? MoleculeConstants.ORDER_UP : MoleculeConstants.ORDER_DOWN; 
     this.sortChange.emit(order);
+  }
+
+  updateTableSize(newSize: string | number): void {
+    const size = Number(newSize);  
+    this.tableSizeChange.emit(size);
   }
 }

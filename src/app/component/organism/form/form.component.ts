@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { EnumSize } from 'src/app/shared/constant/enumSize';
-import { FormField } from 'src/app/shared/models/FormField';
+import { OrganismConstants } from 'src/app/shared/constant/stringConstants/organismConstants';
+import { FormField } from 'src/app/shared/models/formField';
 import { FormFieldConfig } from 'src/app/shared/models/formFieldConfig';
 import { ValidationConfig } from 'src/app/shared/models/validationConfig';
 import { CategoryService } from 'src/app/shared/service/category/category.service'; 
@@ -15,8 +16,8 @@ import { ValidationsComponent } from 'src/app/shared/utils/validations/validatio
 export class FormComponent  implements OnInit {
 
   @Input() formFieldsConfig: FormFieldConfig[] = [];
-  @Input() formName: string = '';
-  @Input() button:{label: string, size:EnumSize} = {label:'',size:EnumSize.Medium};
+  @Input() formName: string = OrganismConstants.EMPTY;
+  @Input() button:{label: string, size:EnumSize} = {label:OrganismConstants.EMPTY,size:EnumSize.Medium};
 
   form: FormGroup;
   formFields: FormField[] = [];
@@ -30,7 +31,7 @@ export class FormComponent  implements OnInit {
 
     this.formFieldsConfig.forEach(fieldConfig => {
       const validators = this.getValidators(fieldConfig.validations);
-      const control = this.fb.control('', validators); 
+      const control = this.fb.control(OrganismConstants.EMPTY, validators); 
 
       this.form.addControl(fieldConfig.name.toLowerCase(), control);
 

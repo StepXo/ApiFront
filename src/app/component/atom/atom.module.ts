@@ -9,6 +9,7 @@ import { ErrorLabelComponent } from './error-label/error-label.component';
 import { PaginationButtonComponent } from './pagination-button/pagination-button.component';
 import { RouterModule } from '@angular/router';
 import { TextareaComponent } from './textarea/textarea.component';
+import { SelectComponent } from './select/select.component';
 
 
 
@@ -21,6 +22,7 @@ import { TextareaComponent } from './textarea/textarea.component';
     ErrorLabelComponent,
     PaginationButtonComponent,
     TextareaComponent,
+    SelectComponent,
   ],
   imports: [
     CommonModule,
@@ -34,7 +36,8 @@ import { TextareaComponent } from './textarea/textarea.component';
     MenuComponent,
     ErrorLabelComponent,
     PaginationButtonComponent,
-    TextareaComponent
+    TextareaComponent,
+    SelectComponent,
   ]
 })
 export class AtomModule { }
