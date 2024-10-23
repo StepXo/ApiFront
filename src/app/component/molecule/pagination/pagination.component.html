@@ -1,0 +1,33 @@
+<app-pagination-button 
+    *ngIf="page > 1"
+    label="🠔" 
+    (click)="loadPreviousPage()">
+</app-pagination-button>
+
+<ng-container *ngFor="let pageNum of pages">
+    <app-pagination-button 
+        *ngIf="pageNum !== '...'" 
+        (click)="goToPage(pageNum)" 
+        [isActive]="pageNum === page"
+        [label]="pageNum.toString()">
+    </app-pagination-button>
+    <span *ngIf="pageNum === '...'">{{ pageNum }}</span>
+</ng-container>
+
+<app-pagination-button 
+    *ngIf="page < totalPages"
+    label="🠖" 
+    (click)="loadNextPage()">
+</app-pagination-button>
+
+<app-pagination-button 
+    *ngIf="isAscending"
+    label="Nombre 🠕" 
+    (click)="toggleSortOrder()">
+</app-pagination-button>
+
+<app-pagination-button 
+    *ngIf="!isAscending"
+    label="Nombre 🠗" 
+    (click)="toggleSortOrder()">
+</app-pagination-button>

@@ -1,0 +1,17 @@
+<form [formGroup]="form" class="form" (ngSubmit)="onSubmit()">
+  
+  <h2>{{ formName }}</h2>
+
+  <app-input-group [fields]="formFields"></app-input-group>
+
+  <app-error-label *ngIf="errorMessage"
+    [message]="errorMessage"
+  ></app-error-label>
+
+  <app-button
+    [label]="button.label"
+    [size] = "button.size"
+    [isDisabled]="isDisabled"
+  ></app-button>
+
+</form>

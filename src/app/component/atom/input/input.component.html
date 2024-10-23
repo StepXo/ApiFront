@@ -1,0 +1,7 @@
+<input 
+  class="custom-textarea"
+  [ngClass]="[size, control.invalid && (control.touched ||control.dirty) ? 'error' : '']"
+  [formControl]="control"
+  [placeholder]="label"
+  [attr.disabled]="isDisabled ? true : null"
+/>

@@ -1,0 +1,10 @@
+// header.component.scss
+header {
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  background-color: var(--spacer-light);
+  gap: 3rem;
+  box-sizing: border-box; 
+}
+  

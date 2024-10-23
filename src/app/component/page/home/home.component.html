@@ -1,0 +1,12 @@
+<div class="home-container">
+    <h1>Bienvenido</h1>
+    <div class="button-group">
+        <app-button
+            *ngFor="let button of buttons"  
+            [label]="button.label"
+            [size]="button.size"
+            [route]="button.route"
+            [isDisabled]="button.isDisabled ?? false"
+        ></app-button>
+    </div>
+</div>

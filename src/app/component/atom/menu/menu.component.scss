@@ -1,0 +1,37 @@
+.menu-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+    
+  }
+  
+.menu-button {
+
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    gap: 8px;
+    padding: 8px 16px;
+    background-color: var(--white);
+
+    font-family: 'Poppins';
+    font-weight: 400;
+    text-align: center;
+
+    white-space: nowrap;
+
+    &:hover {
+        background-color: var(--spacer);
+    }
+
+    &:active {
+        background-color: #6A17AB;
+    }
+    
+    &:disabled {
+        background-color: var(--disabled);
+        cursor: not-allowed;
+    }
+}

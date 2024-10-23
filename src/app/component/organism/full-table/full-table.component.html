@@ -1,0 +1,14 @@
+<app-table 
+    class = "table-container"
+    [labels]="labels"
+    [values]="values"
+></app-table>
+
+<div class="pagination-container">
+    <app-pagination 
+    [(page)]="pagination.page" 
+    [totalPages] ='
+    pagination.totalPages' 
+    (pageChange)="onPageChange()" 
+    (sortChange)="onSortChange($event)"></app-pagination>
+</div>

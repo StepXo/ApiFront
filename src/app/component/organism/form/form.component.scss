@@ -1,0 +1,19 @@
+.form{
+    border: 2px solid var(--spacer-light);
+    font-family: 'Poppins';
+    font-weight: 400;
+    border-radius: 2px;
+    width: 280px;
+    padding: 0px 12px 12px 12px;
+
+    h2 {
+        margin-bottom: 16px;
+        text-align: center;
+    }
+
+    app-button {
+        margin-top: 40px;
+        display: flex;
+        justify-content: right;
+    }
+}

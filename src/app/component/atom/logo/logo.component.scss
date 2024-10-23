@@ -1,0 +1,22 @@
+.logo-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-image {
+  &.large {
+    width: 100px;
+    height: auto;
+  }
+  
+  &.medium {
+    width: 64px;
+    height: auto;
+  }
+
+  &.small {
+    width: 24px;
+    height: auto;
+  }
+}
