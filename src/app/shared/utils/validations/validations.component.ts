@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { errorMessages } from '../../constant/errors';
+import { ErrorStatus } from '../../constant/enumErrorStatus';
 
 @Component({
   selector: 'app-validations',
@@ -9,7 +10,7 @@ import { errorMessages } from '../../constant/errors';
 })
 export class ValidationsComponent {
   static validateInput(control: FormControl): string | null {
-    if (!control || !control.errors) return null;
+    if (!control?.errors) return null;
 
     for (const errorName of Object.keys(control.errors)) {
       const errorMessage = errorMessages[errorName];
@@ -25,15 +26,18 @@ export class ValidationsComponent {
   }
 
   static validateCategory(error: any): string | null {
-    if (error.status === 403) {
-      return 'No estás autorizado o el token ha vencido.';
+    if (error.status === ErrorStatus.Forbidden) {
+      const message = errorMessages['token'];
+      return typeof message === 'function' ? message(error) : message;
     }
 
-    if (error.status === 409) {
-      return 'Ya existe una categoría con ese nombre.';
+    if (error.status === ErrorStatus.Conflict) {
+      const message = errorMessages['category'];
+      return typeof message === 'function' ? message(error) : message;
     } 
-    return 'Error desconocido, por favor intentalo de nuevo.';
+    
+    const message = errorMessages['genericError'];
+    return typeof message === 'function' ? message(error) : message;
   }
-  
 }
 

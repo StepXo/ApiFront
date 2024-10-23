@@ -1,5 +1,6 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { Component, Input } from '@angular/core';
+import { FormField } from 'src/app/shared/models/FormField';
+
 
 @Component({
   selector: 'app-input-group',
@@ -7,6 +8,6 @@ import { FormControl } from '@angular/forms';
   styleUrls: ['./input-group.component.scss']
 })
 export class InputGroupComponent {
-  @Input() fields: { control: FormControl, label: string, type:string, size:'normal' | 'small', message:string | null}[] = [];
+  @Input() fields: FormField[] = [];
 
 }

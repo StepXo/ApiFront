@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-error-label',
@@ -6,5 +6,5 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./error-label.component.scss']
 })
 export class ErrorLabelComponent {
-  @Input() message: String | null = null
+  @Input() message: string | null = null
 }

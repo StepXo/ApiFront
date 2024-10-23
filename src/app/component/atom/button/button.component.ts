@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { EnumSize } from 'src/app/shared/constant/enumSize';
 
 @Component({
   selector: 'app-button',
@@ -7,7 +8,7 @@ import { Component, Input } from '@angular/core';
 })
 export class ButtonComponent {
   @Input() label: string = 'Button';
-  @Input() size: 'large' | 'medium' | 'small' = 'large'; 
+  @Input() size: EnumSize = EnumSize.Medium; 
   @Input() isDisabled: boolean = false;
   @Input() route: string = ""
 

@@ -1,21 +1,7 @@
-<ng-container *ngIf="type === 'textarea'; else inputField">
-  <textarea 
-    class="custom-input"
-    [ngClass]="[size, control.invalid && control.touched ? 'error' : '']"
-    [formControl]="control"
-    [placeholder]="label"
-    [attr.disabled]="isDisabled ? true : null"
-    (input)="adjustTextareaHeight($event)"
-  ></textarea>
-</ng-container>
-
-<ng-template #inputField>
-  <input 
-    class="custom-input"
-    [ngClass]="[size, control.invalid && control.touched ? 'error' : '']"
-    [formControl]="control"
-    [type]="type" 
-    [placeholder]="label"
-    [attr.disabled]="isDisabled ? true : null"
-  />
-</ng-template>
+<input 
+  class="custom-textarea"
+  [ngClass]="[size, control.invalid && (control.touched ||control.dirty) ? 'error' : '']"
+  [formControl]="control"
+  [placeholder]="label"
+  [attr.disabled]="isDisabled ? true : null"
+/>

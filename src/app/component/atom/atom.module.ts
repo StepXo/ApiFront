@@ -8,6 +8,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ErrorLabelComponent } from './error-label/error-label.component';
 import { PaginationButtonComponent } from './pagination-button/pagination-button.component';
 import { RouterModule } from '@angular/router';
+import { TextareaComponent } from './textarea/textarea.component';
 
 
 
@@ -19,6 +20,7 @@ import { RouterModule } from '@angular/router';
     MenuComponent,
     ErrorLabelComponent,
     PaginationButtonComponent,
+    TextareaComponent,
   ],
   imports: [
     CommonModule,
@@ -31,7 +33,8 @@ import { RouterModule } from '@angular/router';
     LogoComponent,
     MenuComponent,
     ErrorLabelComponent,
-    PaginationButtonComponent
+    PaginationButtonComponent,
+    TextareaComponent
   ]
 })
 export class AtomModule { }

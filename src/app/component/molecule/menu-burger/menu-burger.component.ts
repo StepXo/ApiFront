@@ -10,7 +10,7 @@ export class MenuBurgerComponent implements OnInit {
   menuVisible: boolean = false;
   @Input() menuItems: { name: string, link: string, isDisabled?: boolean }[] = [];
   
-  constructor(private router: Router) {}
+  constructor(private readonly router: Router) {}
 
   ngOnInit(): void {
     this.menuItems.forEach(item => {

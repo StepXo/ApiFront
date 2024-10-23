@@ -1,4 +1,4 @@
-.custom-input{
+.custom-textarea{
     border: 2px solid var(--spacer-light);
     opacity: 1;
     border-radius: 2px;
@@ -19,20 +19,22 @@
         width: 100%;
     }
 
-    &.normal {
-        height: 40px;
-        padding: 12px;
-        input {
-            height: 20px;
-        }
-    }
+    @each $size, $values in (
+    medium: (
+        padding: 12px,
+        input-height: 20px
+    ),
+    small: (
+        padding: 8px 12px,
+        input-height: 20px
+    )) {
+    &.#{$size} {
+        height: map-get($values, height);
+        padding: map-get($values, padding);
 
-    &.small {
-        height: 36px;
-        padding: 8px 12px;
         input {
-            height: 20px;
-        }
+            height: map-get($values, input-height);
+        }}
     }
 
     input:placeholder-shown {
@@ -58,6 +60,3 @@
         border-color: var(--error);
     }
 }
-
-
-  

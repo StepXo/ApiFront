@@ -18,4 +18,4 @@ import { OrganismModule } from './organism/organism.module';
     OrganismModule
   ]
 })
-export class DesignSistemModule { }
+export class DesignSystemModule { }

@@ -5,17 +5,17 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AtomModule } from '../atom/atom.module';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
-import { CategoryTableComponent } from './category-table/category-table.component';
-import { CategoryFormComponent } from './category-form/category-form.component';
+import { FormComponent } from './form/form.component';
+import { FullTableComponent } from './full-table/full-table.component';
 
 
 
 @NgModule({
   declarations: [
-    CategoryFormComponent,
+    FormComponent,
     HeaderComponent,
     FooterComponent,
-    CategoryTableComponent,
+    FullTableComponent,
   ],
   imports: [
     CommonModule,
@@ -25,10 +25,10 @@ import { CategoryFormComponent } from './category-form/category-form.component';
 
   ],
   exports: [
-    CategoryFormComponent,
+    FormComponent,
     HeaderComponent,
     FooterComponent,
-    CategoryTableComponent,
+    FullTableComponent,
     ]
 })
 export class OrganismModule { }

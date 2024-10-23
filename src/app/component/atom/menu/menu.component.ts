@@ -13,7 +13,7 @@ export class MenuComponent {
   @Input() isDisabled: boolean = false; 
 
 
-  constructor(private router: Router) { }
+  constructor(private readonly router: Router) { }
 
   navigateToLink(): void {
     this.router.navigate([this.link]);

@@ -19,3 +19,15 @@
     label="🠖" 
     (click)="loadNextPage()">
 </app-pagination-button>
+
+<app-pagination-button 
+    *ngIf="isAscending"
+    label="Nombre 🠕" 
+    (click)="toggleSortOrder()">
+</app-pagination-button>
+
+<app-pagination-button 
+    *ngIf="!isAscending"
+    label="Nombre 🠗" 
+    (click)="toggleSortOrder()">
+</app-pagination-button>
