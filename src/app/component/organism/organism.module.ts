@@ -7,6 +7,7 @@ import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { FormComponent } from './form/form.component';
 import { FullTableComponent } from './full-table/full-table.component';
+import { DropdownComponent } from './dropdown/dropdown.component';
 
 
 
@@ -16,6 +17,7 @@ import { FullTableComponent } from './full-table/full-table.component';
     HeaderComponent,
     FooterComponent,
     FullTableComponent,
+    DropdownComponent
   ],
   imports: [
     CommonModule,
@@ -29,6 +31,7 @@ import { FullTableComponent } from './full-table/full-table.component';
     HeaderComponent,
     FooterComponent,
     FullTableComponent,
+    DropdownComponent
     ]
 })
 export class OrganismModule { }

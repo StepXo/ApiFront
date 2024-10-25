@@ -1,6 +1,8 @@
 import { Component, HostListener, Input, OnInit} from '@angular/core';
 import {FormGroup } from '@angular/forms';
 import { EnumSize } from 'src/app/shared/constant/enumSize';
+import { Brand } from 'src/app/shared/models/brand';
+import { Category } from 'src/app/shared/models/category';
 import { FormField } from 'src/app/shared/models/formField';
 
 @Component({
@@ -10,18 +12,16 @@ import { FormField } from 'src/app/shared/models/formField';
 })
 export class DropdownComponent implements OnInit{
 
-  @Input() form!: FormGroup;
-  @Input() listOfItems: {id:number,name:string}[] = [];
   @Input() formField!: FormField;
 
   size = EnumSize.Small
 
   isOpen = false;
-  selectedItems: {id: number, name: string} []= [];
-  filteredItems: { id: number, name: string }[] = [];
+  selectedItems:  (Brand | Category)[]= [];
+  filteredItems: (Brand | Category)[] = [];
 
   ngOnInit(): void {
-    this.filteredItems = [...this.listOfItems];
+    this.filteredItems = [...(this.formField.data || [])];
   }
 
   toggleDropdown() {
@@ -32,7 +32,7 @@ export class DropdownComponent implements OnInit{
     this.isOpen = state;
   }
 
-  selectItem(item: {id: number, name: string}) {
+  selectItem(item: Brand | Category) {
     const index = this.selectedItems.findIndex(selected => selected.id === item.id);
     if (index >= 0) {
       this.selectedItems.splice(index, 1);
@@ -43,11 +43,11 @@ export class DropdownComponent implements OnInit{
     this.formField.control.setValue(selectedIds);
   }
 
-  isSelected(item: {id: number, name: string}): boolean {
+  isSelected(item: Brand | Category): boolean {
     return this.selectedItems.some(selected => selected.id === item.id);
   }
 
-  removeItem(item: {id: number, name: string}) {
+  removeItem(item: Brand | Category) {
     const index = this.selectedItems.findIndex(selected => selected.id === item.id);
     if (index >= 0) {
       this.selectedItems.splice(index, 1);
@@ -62,7 +62,7 @@ export class DropdownComponent implements OnInit{
   }
 
   filterItems(searchTerm: string) {
-    this.filteredItems = this.listOfItems.filter(item =>
+    this.filteredItems = (this.formField.data || []).filter(item =>
       item.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }

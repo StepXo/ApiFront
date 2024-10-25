@@ -1,5 +1,7 @@
 import { FormControl } from "@angular/forms";
 import { EnumSize } from "../constant/enumSize";
+import { Brand } from "./brand";
+import { Category } from "./category";
 
 export interface FormField {
     control: FormControl;
@@ -7,4 +9,5 @@ export interface FormField {
     type: string;
     size: EnumSize;
     message: string | null;
+    data?: (Brand | Category)[]
 }

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormBuilder, FormGroup, Validators, ValidatorFn } from '@angular/forms';
 import { EnumSize } from 'src/app/shared/constant/enumSize';
 import { OrganismConstants } from 'src/app/shared/constant/stringConstants/organismConstants';
 import { FormField } from 'src/app/shared/models/formField';
@@ -22,6 +22,8 @@ export class FormComponent  implements OnInit {
 
   form: FormGroup;
   formFields: FormField[] = [];
+  dropdownFields: FormField[] = [];
+
   @Input() errorMessage: string | null = null;
 
   constructor(private readonly fb: FormBuilder) {
@@ -31,23 +33,32 @@ export class FormComponent  implements OnInit {
   ngOnInit() {
 
     this.formFieldsConfig.forEach(fieldConfig => {
+      
       const validators = this.getValidators(fieldConfig.validations);
       const control = this.fb.control(OrganismConstants.EMPTY, validators); 
-
       this.form.addControl(fieldConfig.name.toLowerCase(), control);
 
-      this.formFields.push({
-        control: control as FormControl,
-        label: fieldConfig.label,
-        type: fieldConfig.type,
-        size: fieldConfig.size,
-        message: this.getErrorMessage(control)
-      });
+      this.addFormField(control, fieldConfig);
 
       control.valueChanges.subscribe(() => {
         this.updateErrorMessage(control);
       });
     });
+  }
+  private addFormField(control: FormControl, fieldConfig: any): void {
+    const fieldData = {
+      control: control,
+      label: fieldConfig.label,
+      type: fieldConfig.type,
+      size: fieldConfig.size,
+      message: this.getErrorMessage(control),
+    };
+  
+    if (fieldConfig.type === 'dropdown') {
+      this.dropdownFields.push(fieldData);
+    } else {
+      this.formFields.push(fieldData);
+    }
   }
 
   get isDisabled(): boolean {
@@ -64,7 +75,8 @@ export class FormComponent  implements OnInit {
   getErrorMessage(control: FormControl): string | null {
     return ValidationsComponent.validateInput(control);
   }
-  private getValidators(validations?: ValidationConfig): any[] {
+
+  private getValidators(validations?: ValidationConfig): ValidatorFn[] {
     const validators = [];
     if (validations) {
       if (validations.required) {
