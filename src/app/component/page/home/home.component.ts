@@ -14,7 +14,9 @@ export class HomeComponent {
   buttons = [
     { label: PageConstants.CATEGORY_LABEL, size: EnumSize.Large, route: PageConstants.CATEGORY_ROUTE },
     { label: PageConstants.BRAND_LABEL, size: EnumSize.Large, route: PageConstants.BRAND_ROUTE },
-    { label: PageConstants.ITEM_LABEL, size: EnumSize.Large, route: PageConstants.ITEM_ROUTE, isDisabled: this.isDisabled },
+    { label: PageConstants.ITEM_LABEL, size: EnumSize.Large, route: PageConstants.ITEM_ROUTE},
+    { label: PageConstants.CLIENT_LABEL, size: EnumSize.Large, route: PageConstants.CLIENT_ROUTE, isDisabled: this.isDisabled },
+
 ];
 
 }

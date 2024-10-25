@@ -7,8 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "jest",
-    "coverage":"jest --coverage",
-    "test:watch":"jest --watch"
+    "coverage": "jest --coverage",
+    "test:watch": "jest --watch"
   },
   "private": true,
   "dependencies": {
@@ -20,6 +20,7 @@
     "@angular/platform-browser": "^14.2.0",
     "@angular/platform-browser-dynamic": "^14.2.0",
     "@angular/router": "^14.2.0",
+    "@ng-select/ng-select": "^9.1.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
@@ -34,20 +35,22 @@
     "jest-preset-angular": "^12.2.6",
     "typescript": "^4.7.2"
   },
-  "jest":{
-    "preset":"jest-preset-angular",
-    "setupFilesAfterEnv":["<rootDir>/src/setup.jest.ts"],
+  "jest": {
+    "preset": "jest-preset-angular",
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/setup.jest.ts"
+    ],
     "moduleNameMapper": {
       "^src/(.*)$": "<rootDir>/src/$1"
     },
-    "testPathIgnorePatterns":[
+    "testPathIgnorePatterns": [
       ",<rootDir>/node_modules/",
       "<rootDir>/dist/"
     ],
-    "globals":{
-      "ts-jest":{
-        "tsConfig":"<rootDir>/tsconfig.spec.json",
-        "stringifyContentPathRegex":"\\.html$"
+    "globals": {
+      "ts-jest": {
+        "tsConfig": "<rootDir>/tsconfig.spec.json",
+        "stringifyContentPathRegex": "\\.html$"
       }
     }
   }

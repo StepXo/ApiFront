@@ -1,6 +1,6 @@
 <app-select
   [options]="tableSizes"
-  placeholder="Tamaño"
+  placeholder="Alto"
   (valueChange)="updateTableSize($event)">
 </app-select>
 
@@ -24,16 +24,4 @@
     *ngIf="page < totalPages"
     label="🠖" 
     (click)="loadNextPage()">
-</app-pagination-button>
-
-<app-pagination-button 
-    *ngIf="isAscending"
-    label="NOMBRE 🠕" 
-    (click)="toggleSortOrder()">
-</app-pagination-button>
-
-<app-pagination-button 
-    *ngIf="!isAscending"
-    label="NOMBRE 🠗" 
-    (click)="toggleSortOrder()">
 </app-pagination-button>

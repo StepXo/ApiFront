@@ -13,7 +13,7 @@ export class OrganismConstants {
     static readonly HOME_PATH: string = '/home';
     static readonly CATEGORY_PATH: string = '/category';
     static readonly BRAND_PATH: string = '/brand';
-    static readonly ITEM_PATH: string = '/Item';
+    static readonly ITEM_PATH: string = '/item';
 
 
 }

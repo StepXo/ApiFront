@@ -1,4 +1,5 @@
 nav {
+
     ul {
         list-style-type: none;
         margin: 0;
@@ -35,7 +36,7 @@ nav {
         background-color: var(--black);
         padding: 2rem;
         box-shadow: 0 0 0 100vmax var(--pop-up);
-        z-index: 1;
+        z-index: 2;
 
         &.visible {
             opacity: 1;
@@ -57,12 +58,12 @@ nav {
 
 }
 
-.togle-menu {
+.toggle-menu {
     display: none;
     border: 0;
     background-color: transparent;
     cursor: pointer;
-    z-index: 2;
+    z-index: 3;
 
     @media screen and (max-width: 725px) {
         display: block;
@@ -70,6 +71,6 @@ nav {
         color: (--black);
         top: 1rem;
         right: 1rem;
-        z-index: 2;
+        z-index: 3;
     }
 }

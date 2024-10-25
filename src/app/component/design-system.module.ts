@@ -3,7 +3,6 @@ import { AtomModule } from './atom/atom.module';
 import { MoleculeModule } from './molecule/molecule.module';
 import { OrganismModule } from './organism/organism.module';
 
-
 @NgModule({
   declarations: [
   ],

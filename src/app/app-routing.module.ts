@@ -12,7 +12,12 @@ const routes: Routes = [
   {path: 'brand',
     loadChildren:() => import('./component/page/brand/brand.module').then(x=>x.BrandModule)
   },
-  { path: '**', redirectTo: '/home' }
+  {path: 'item',
+    loadChildren:() => import('./component/page/item/item.module').then(x=>x.ItemModule)
+  },
+  { path: '**', 
+    loadChildren:() => import('./component/page/not-found/not-found.module').then(x=>x.NotFoundModule) 
+  }
 ];
 
 @NgModule({

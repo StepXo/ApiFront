@@ -46,9 +46,10 @@ export class BrandComponent implements OnInit {
 
   brands: Brand[] = [];
 
-  labels: string[] = [PageConstants.ID, 
-    PageConstants.LABEL_NAME.toUpperCase(), 
-    PageConstants.LABEL_DESCRIPTION.toLowerCase()
+  labels: { text: string, isButton: boolean }[] = [
+    { text: PageConstants.ID, isButton: false },
+    { text: PageConstants.LABEL_NAME.toUpperCase(), isButton: true },
+    { text: PageConstants.LABEL_DESCRIPTION.toLowerCase(), isButton: false }
   ];
 
   pagination = {

@@ -13,7 +13,7 @@ export class PageConstants {
 
     static readonly ERROR_BRANDS: string = 'Error fetching brands';
     static readonly ERROR_CATEGORIES: string = 'Error fetching categories';
-    
+
     static readonly PATTERN: string = '^[a-zA-Z0-9 ]*$';
     static readonly ID: string = 'ID';
     static readonly PAGE_SIZE: number = 10;
@@ -26,7 +26,9 @@ export class PageConstants {
     static readonly CATEGORY_LABEL: string = 'Categorias';
     static readonly BRAND_LABEL: string = 'Marcas';
     static readonly ITEM_LABEL: string = 'Articulos';
+    static readonly CLIENT_LABEL: string = 'Clientes';
     static readonly CATEGORY_ROUTE: string = '/category';
     static readonly BRAND_ROUTE: string = '/brand';
     static readonly ITEM_ROUTE: string = '/item';
+    static readonly CLIENT_ROUTE: string = '';
 }

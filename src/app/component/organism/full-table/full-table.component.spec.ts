@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FullTableComponent } from './full-table.component';
-import { Pagination } from 'src/app/shared/constant/pagination';
 import { SimpleChange } from '@angular/core';
 
 describe('FullTableComponent', () => {

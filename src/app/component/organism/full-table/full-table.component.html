@@ -2,6 +2,7 @@
     class = "table-container"
     [labels]="labels"
     [values]="values"
+    (sortChange)="onSortChange($event)"
 ></app-table>
 
 <div class="pagination-container">

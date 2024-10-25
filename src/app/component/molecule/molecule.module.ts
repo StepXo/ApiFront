@@ -5,7 +5,9 @@ import { AtomModule } from '../atom/atom.module';
 import { InputGroupComponent } from './input-group/input-group.component';
 import { TableComponent } from './table/table.component';
 import { PaginationComponent } from './pagination/pagination.component';
-
+import { DropdownComponent } from './dropdown/dropdown.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 
 @NgModule({
@@ -13,17 +15,23 @@ import { PaginationComponent } from './pagination/pagination.component';
     MenuBurgerComponent,
     InputGroupComponent,
     TableComponent,
-    PaginationComponent
+    PaginationComponent,
+    DropdownComponent
   ],
   imports: [
     CommonModule,
-    AtomModule
+    AtomModule,
+    ReactiveFormsModule,
+    NgSelectModule
+
   ],
   exports:[
     MenuBurgerComponent,
     InputGroupComponent,
     TableComponent,
-    PaginationComponent
-  ]
+    PaginationComponent,
+    DropdownComponent
+  ],
+
 })
 export class MoleculeModule { }

@@ -55,6 +55,6 @@ describe('HomeComponent', () => {
     expect(thirdButton.label).toBe('Articulos');
     expect(thirdButton.size).toBe(EnumSize.Large);
     expect(thirdButton.route).toBe('/item');
-    expect(thirdButton.isDisabled).toBe(true);
+    expect(thirdButton.isDisabled).toBe(false);
   });
 });

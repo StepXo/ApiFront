@@ -5,7 +5,6 @@ import { OrganismConstants } from 'src/app/shared/constant/stringConstants/organ
 import { FormField } from 'src/app/shared/models/formField';
 import { FormFieldConfig } from 'src/app/shared/models/formFieldConfig';
 import { ValidationConfig } from 'src/app/shared/models/validationConfig';
-import { CategoryService } from 'src/app/shared/service/category/category.service'; 
 import { ValidationsComponent } from 'src/app/shared/utils/validations/validations.component';
 
 @Component({
@@ -25,7 +24,7 @@ export class FormComponent  implements OnInit {
   formFields: FormField[] = [];
   @Input() errorMessage: string | null = null;
 
-  constructor(private readonly fb: FormBuilder, private readonly categoryService: CategoryService) {
+  constructor(private readonly fb: FormBuilder) {
     this.form = this.fb.group({}); 
   }
 

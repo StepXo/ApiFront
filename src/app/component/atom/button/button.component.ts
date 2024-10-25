@@ -12,5 +12,6 @@ export class ButtonComponent {
   @Input() size: EnumSize = EnumSize.Medium; 
   @Input() isDisabled: boolean = false;
   @Input() route: string = AtomConstants.EMPTY;
+  
 
 }

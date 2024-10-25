@@ -1,5 +1,8 @@
 import { Component, Input, OnChanges, Output, SimpleChanges, EventEmitter } from '@angular/core';
 import { Pagination } from 'src/app/shared/constant/pagination';
+import { Brand } from 'src/app/shared/models/brand';
+import { Category } from 'src/app/shared/models/category';
+import { Item } from 'src/app/shared/models/Item';
 
 @Component({
   selector: 'app-full-table',
@@ -7,15 +10,15 @@ import { Pagination } from 'src/app/shared/constant/pagination';
   styleUrls: ['./full-table.component.scss']
 })
 export class FullTableComponent implements OnChanges {
-  @Input() labels: string[] = [];
-  @Input() data: any[] = [];
+  @Input() labels: { text: string, isButton: boolean }[] = [];
+  @Input() data: (Category | Brand | Item)[] = [];
   @Input() pagination: Pagination = {page: 1,size:10,totalPages:1, order:'asc'}
   @Output() sortChange = new EventEmitter<string>();
 
 
   @Input() loadDataFunction!: (page: number, size: number) => void;
 
-  values: any[][] = [];
+  values: (Category | Brand | Item)[][] = [];
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['data']) {
@@ -44,5 +47,6 @@ export class FullTableComponent implements OnChanges {
   }
 
   onSortChange(newOrder: string): void {
-    this.sortChange.emit(newOrder);  }
+    this.sortChange.emit(newOrder);  
+  }
 }
