@@ -4,6 +4,10 @@
 
   <app-input-group [fields]="formFields"></app-input-group>
 
+  <div *ngFor="let dropdownField of dropdownFields">
+    <app-dropdown [formField]="dropdownField"></app-dropdown>
+  </div>
+  
   <app-error-label *ngIf="errorMessage"
     [message]="errorMessage"
   ></app-error-label>
