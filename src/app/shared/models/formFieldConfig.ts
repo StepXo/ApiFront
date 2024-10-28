@@ -9,5 +9,4 @@ export interface FormFieldConfig {
     type: string;
     size: EnumSize;
     validations?: ValidationConfig;
-    data?:(Brand | Category)[];
 }

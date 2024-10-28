@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { EnumSize } from 'src/app/shared/constant/enumSize';
 import { PageConstants } from 'src/app/shared/constant/stringConstants/pageConstants';
 import { Brand } from 'src/app/shared/models/brand';
+import { Category } from 'src/app/shared/models/category';
+import { Item } from 'src/app/shared/models/Item';
 import { BrandService } from 'src/app/shared/service/brand/brand.service';
-import { ValidationsComponent } from 'src/app/shared/utils/validations/validations.component';
+import { ValidationsService } from 'src/app/shared/service/validations/validations.service';
 
 @Component({
   selector: 'app-brand',
@@ -25,6 +27,7 @@ export class BrandComponent implements OnInit {
       type: PageConstants.INPUT,
       size: EnumSize.Medium,
       validations: {
+        type:'string',
         required: true,
         min: PageConstants.MIN_LENGTH, 
         max: PageConstants.MAX_NAME_LENGTH, 
@@ -37,6 +40,7 @@ export class BrandComponent implements OnInit {
       type: PageConstants.TEXT_AREA,
       size: EnumSize.Medium,
       validations: {
+        type:'string',
         required: true,
         min: PageConstants.MIN_LENGTH, 
         max: PageConstants.MAX_DESCRIPTION_LENGTH_2
@@ -89,13 +93,13 @@ export class BrandComponent implements OnInit {
   }
   
 
-  onFormSubmit(data: any) {
+  onFormSubmit(data: Category | Brand | Item) {
     this.brandService.createBrand(data).subscribe({
         next: () => {
           this.loadData(this.pagination.page, this.pagination.size, this.pagination.order);
         },
         error: (error) => {
-          this.errorMessage = ValidationsComponent.validateCategory(error);
+          this.errorMessage = ValidationsService.validateCategory(error);
         }
     });
   }

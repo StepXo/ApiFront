@@ -9,5 +9,4 @@ export interface FormField {
     type: string;
     size: EnumSize;
     message: string | null;
-    data?: (Brand | Category)[]
 }

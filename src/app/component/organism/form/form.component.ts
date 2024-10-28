@@ -1,11 +1,13 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl, FormBuilder, FormGroup, Validators, ValidatorFn } from '@angular/forms';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
+import { FormControl, FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { EnumSize } from 'src/app/shared/constant/enumSize';
 import { OrganismConstants } from 'src/app/shared/constant/stringConstants/organismConstants';
+import { Brand } from 'src/app/shared/models/brand';
+import { Category } from 'src/app/shared/models/category';
 import { FormField } from 'src/app/shared/models/formField';
 import { FormFieldConfig } from 'src/app/shared/models/formFieldConfig';
-import { ValidationConfig } from 'src/app/shared/models/validationConfig';
-import { ValidationsComponent } from 'src/app/shared/utils/validations/validations.component';
+import { Item } from 'src/app/shared/models/Item';
+import { ValidationsService } from 'src/app/shared/service/validations/validations.service';
 
 @Component({
   selector: 'app-form',
@@ -18,7 +20,7 @@ export class FormComponent  implements OnInit {
   @Input() formName: string = OrganismConstants.EMPTY;
   @Input() button:{label: string, size:EnumSize} = {label:OrganismConstants.EMPTY,size:EnumSize.Medium};
 
-  @Output() formSubmit = new EventEmitter<any>();
+  @Output() formSubmit = new EventEmitter<Category | Brand | Item>();
 
   form: FormGroup;
   formFields: FormField[] = [];
@@ -31,20 +33,43 @@ export class FormComponent  implements OnInit {
   }
 
   ngOnInit() {
+    this.initializeForm()
+  }
+
+  private initializeForm(){
+    this.formFields = []; 
+    this.dropdownFields = [];
 
     this.formFieldsConfig.forEach(fieldConfig => {
-      
-      const validators = this.getValidators(fieldConfig.validations);
-      const control = this.fb.control(OrganismConstants.EMPTY, validators); 
+      const control = this.getControl(fieldConfig); 
       this.form.addControl(fieldConfig.name.toLowerCase(), control);
-
+  
       this.addFormField(control, fieldConfig);
-
+  
       control.valueChanges.subscribe(() => {
         this.updateErrorMessage(control);
       });
     });
   }
+  
+  private getControl(fieldConfig: FormFieldConfig): FormControl {
+
+    const validators = ValidationsService.getValidators(fieldConfig.validations);
+    return this.createControl(fieldConfig.type,validators)
+  }
+  
+  private createControl(type: string, validators: any): FormControl {
+    switch (type) {
+        case 'number':
+            return this.fb.control(0, validators);
+        case 'list':
+            return this.fb.control([], validators);
+        case 'string':
+        default:
+            return this.fb.control('', validators);
+    }
+}
+
   private addFormField(control: FormControl, fieldConfig: any): void {
     const fieldData = {
       control: control,
@@ -53,6 +78,7 @@ export class FormComponent  implements OnInit {
       size: fieldConfig.size,
       message: this.getErrorMessage(control),
     };
+
   
     if (fieldConfig.type === 'dropdown') {
       this.dropdownFields.push(fieldData);
@@ -73,32 +99,16 @@ export class FormComponent  implements OnInit {
   }
 
   getErrorMessage(control: FormControl): string | null {
-    return ValidationsComponent.validateInput(control);
-  }
-
-  private getValidators(validations?: ValidationConfig): ValidatorFn[] {
-    const validators = [];
-    if (validations) {
-      if (validations.required) {
-        validators.push(Validators.required);
-      }
-      if (validations.min) {
-        validators.push(Validators.minLength(validations.min));
-      }
-      if (validations.max) {
-        validators.push(Validators.maxLength(validations.max));
-      }
-      if (validations.pattern) {
-        validators.push(Validators.pattern(validations.pattern));
-      }
-    }
-    return validators;
+    return ValidationsService.validateInput(control);
   }
 
   onSubmit() {
     this.errorMessage = null;
     if (!this.form.valid) return;
     const data = this.form.value;
+
+    console.log(data)
+
     console.log(data)
     this.formSubmit.emit(data); 
     this.form.reset();

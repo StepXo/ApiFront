@@ -3,7 +3,7 @@ import { CategoryComponent } from './category.component';
 import { CategoryService } from 'src/app/shared/service/category/category.service'; 
 import { of, throwError } from 'rxjs';
 import { Category } from 'src/app/shared/models/category'; 
-import { ValidationsComponent } from 'src/app/shared/utils/validations/validations.component';
+import { ValidationsService } from 'src/app/shared/service/validations/validations.service';
 
 describe('CategoryComponent', () => { 
   let component: CategoryComponent; 
@@ -102,7 +102,7 @@ describe('CategoryComponent', () => {
     const errorResponse = { message: 'An error occurred' };
 
     categoryService.createCategory.mockReturnValue(throwError(() => errorResponse));
-    jest.spyOn(ValidationsComponent, 'validateCategory').mockReturnValue('Validation error occurred');
+    jest.spyOn(ValidationsService, 'validateCategory').mockReturnValue('Validation error occurred');
 
     component.onFormSubmit(formData);
 

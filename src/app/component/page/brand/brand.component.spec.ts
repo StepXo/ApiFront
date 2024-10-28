@@ -3,7 +3,7 @@ import { BrandComponent } from './brand.component';
 import { BrandService } from 'src/app/shared/service/brand/brand.service'; 
 import { of, throwError } from 'rxjs';
 import { Brand } from 'src/app/shared/models/brand'; 
-import { ValidationsComponent } from 'src/app/shared/utils/validations/validations.component';
+import { ValidationsService } from 'src/app/shared/service/validations/validations.service';
 
 describe('BrandComponent', () => { 
   let component: BrandComponent; 
@@ -102,7 +102,7 @@ describe('BrandComponent', () => {
     const errorResponse = { message: 'An error occurred' };
 
     brandService.createBrand.mockReturnValue(throwError(() => errorResponse));
-    jest.spyOn(ValidationsComponent, 'validateCategory').mockReturnValue('Validation error occurred');
+    jest.spyOn(ValidationsService, 'validateCategory').mockReturnValue('Validation error occurred');
 
     component.onFormSubmit(formData);
 

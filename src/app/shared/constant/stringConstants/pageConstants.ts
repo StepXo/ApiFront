@@ -1,6 +1,7 @@
 export class PageConstants {
     static readonly FORM_NAME_M: string = "Crear Marca";
     static readonly FORM_NAME_C: string = "Crear Categoria";
+    static readonly FORM_NAME_I: string = "Crear Articulo";
 
     static readonly BUTTON_LABEL: string = "Enviar";
     static readonly NAME: string = 'name';
@@ -13,8 +14,10 @@ export class PageConstants {
 
     static readonly ERROR_BRANDS: string = 'Error fetching brands';
     static readonly ERROR_CATEGORIES: string = 'Error fetching categories';
+    static readonly ERROR_ITEMS: string = 'Error fetching items';
 
-    static readonly PATTERN: string = '^[a-zA-Z0-9 ]*$';
+
+    static readonly PATTERN: string = '^[a-zA-Z0-9 ñÑáéíóúÁÉÍÓÚüÜ]*$';
     static readonly ID: string = 'ID';
     static readonly PAGE_SIZE: number = 10;
     static readonly FIRST: number = 1;

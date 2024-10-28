@@ -1,12 +1,24 @@
 <app-header></app-header>
 
-<form [formGroup]="form">
-    <app-dropdown 
-        [formField]="formField"
-    ></app-dropdown>
-</form>
+<div class="app-container">
+    
+    <app-form 
+        class="item-form"
+        [formName]="formName"
+        [button]="button"
+        [formFieldsConfig]="formFieldsConfig"
+        [errorMessage] = "errorMessage"
+        (formSubmit)="onFormSubmit($event)"
+    ></app-form>
 
-
-<button></button>
+    <app-full-table 
+        class="item-table"
+        [labels]="labels" 
+        [data]="items" 
+        [pagination]="pagination" 
+        [loadDataFunction]="loadData.bind(this)"
+        (sortChange)="onSortChange($event)"
+    ></app-full-table>
+</div>
 
 <app-footer></app-footer>

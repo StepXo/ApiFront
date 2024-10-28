@@ -4,7 +4,8 @@
 
   <app-input-group [fields]="formFields"></app-input-group>
 
-  <div *ngFor="let dropdownField of dropdownFields">
+  <div *ngFor="let dropdownField of dropdownFields"
+  class="spacing">
     <app-dropdown [formField]="dropdownField"></app-dropdown>
   </div>
   
