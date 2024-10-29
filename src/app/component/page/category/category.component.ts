@@ -4,6 +4,7 @@ import { PageConstants } from 'src/app/shared/constant/stringConstants/pageConst
 import { Brand } from 'src/app/shared/models/brand';
 import { Category } from 'src/app/shared/models/category';
 import { Item } from 'src/app/shared/models/Item';
+import { ItemRequest } from 'src/app/shared/models/ItemRequest';
 import { CategoryService } from 'src/app/shared/service/category/category.service';
 import { ValidationsService } from 'src/app/shared/service/validations/validations.service';
 
@@ -81,10 +82,10 @@ export class CategoryComponent   {
     });
   }
 
-  onSortChange(order: string): void {
-    this.pagination.order = order; 
+  onSortChange(sortData: { field: string, order: string }): void {
+    this.pagination.order = sortData.order;
     this.pagination.page = PageConstants.FIRST;
-    this.loadData(this.pagination.page, this.pagination.size, this.pagination.order);
+    this.loadData(this.pagination.page, this.pagination.size, sortData.order);
   }
 
   onPageChange(newPage: number): void {
@@ -92,7 +93,7 @@ export class CategoryComponent   {
     this.loadData(this.pagination.page, this.pagination.size);
   }
 
-  onFormSubmit(categoryData: Category | Brand | Item) {
+  onFormSubmit(categoryData: Category | Brand | ItemRequest) {
     this.categoryService.createCategory(categoryData).subscribe({
       next: () => {
         this.loadData(this.pagination.page, this.pagination.size, this.pagination.order);

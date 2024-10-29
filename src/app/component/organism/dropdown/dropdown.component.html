@@ -1,4 +1,4 @@
-<div #dropdownContainer class="dropdown-container medium">
+<div #dropdownContainer [ngClass]="{'dropdown-container': true, 'medium': true, 'error': formField.control.invalid && (formField.control.touched || formField.control.dirty)}">
   <div class="selected-items">
     <app-button *ngFor="let item of selectedItems" 
       (click)="removeItem(item)"
@@ -7,20 +7,22 @@
     </app-button>
   </div>
 
-  <input
-    type="text"
-    class="search-input"
-    placeholder="Buscar..."
-    (input)="onInputChange($event)"
-    (focus)="setDropdownState(true)"
-    [disabled]="isInputDisabled()"
-  />
-
-  <app-pagination-button 
-    class = "dropdown-toggle"
-    [label]="isOpen ? '▲' : '▼'"
-    (click)="toggleDropdown()">
-  </app-pagination-button>
+  <ng-container *ngIf="!isInputDisabled()">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Buscar..."
+      (input)="onInputChange($event)"
+      (focus)="setDropdownState(true)"
+    />
+    
+    <app-pagination-button 
+      class="dropdown-toggle"
+      [ngClass]="{'disabled': isInputDisabled()}"
+      [label]="isOpen ? '▲' : '▼'"
+      (click)="toggleDropdown()">
+    </app-pagination-button>
+  </ng-container>
 </div>
 
 <div *ngIf="isOpen" class="dropdown-options">

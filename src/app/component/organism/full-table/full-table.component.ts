@@ -12,9 +12,8 @@ import { Item } from 'src/app/shared/models/Item';
 export class FullTableComponent implements OnChanges {
   @Input() labels: { text: string, isButton: boolean }[] = [];
   @Input() data: (Category | Brand | Item)[] = [];
-  @Input() pagination: Pagination = {page: 1,size:10,totalPages:1, order:'asc'}
-  @Output() sortChange = new EventEmitter<string>();
-
+  @Input() pagination: Pagination = { page: 1, size: 10, totalPages: 1, order: 'asc' };
+  @Output() sortChange = new EventEmitter<{ field: string; order: string }>();
 
   @Input() loadDataFunction!: (page: number, size: number) => void;
 
@@ -25,8 +24,9 @@ export class FullTableComponent implements OnChanges {
       this.updateTableValues();
     }
   }
+
   onTableSizeChange(newSize: number): void {
-    this.pagination.size = newSize;  
+    this.pagination.size = newSize;
     this.pagination.page = 1;
     this.loadData();
   }
@@ -38,7 +38,7 @@ export class FullTableComponent implements OnChanges {
   loadData(): void {
     if (this.loadDataFunction) {
       this.loadDataFunction(this.pagination.page, this.pagination.size);
-      this.values = this.data.map(item => Object.values(item)); 
+      this.values = this.data.map(item => Object.values(item));
     }
   }
 
@@ -46,7 +46,8 @@ export class FullTableComponent implements OnChanges {
     this.values = this.data.map(item => Object.values(item));
   }
 
-  onSortChange(newOrder: string): void {
-    this.sortChange.emit(newOrder);  
+  onSortChange(sortData: { field: string, order: string }): void {
+    this.pagination.order = sortData.order;
+    this.sortChange.emit(sortData);
   }
 }

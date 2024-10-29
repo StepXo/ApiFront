@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment';
 import { Item } from '../../models/Item';
 import { ItemResponse } from '../../models/ItemResponse';
 import { Observable } from 'rxjs';
+import { ItemRequest } from '../../models/ItemRequest';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,8 @@ export class ItemService {
 
   constructor(private readonly http: HttpClient) { }
 
-  createItem(itemData: { name: string; description: string }): Observable<Item> {
+  createItem(itemData: ItemRequest): Observable<Item> {
+    console.log(itemData)
     const headers = new HttpHeaders({
       Authorization: 'Bearer ' + this.bearer
     });
@@ -33,5 +35,18 @@ export class ItemService {
       .set('order', order);
     return this.http.get<ItemResponse>(this.apiUrl, { headers, params });
   }
+
+  getItemByField(page: number, size: number, order: string, field: string): Observable<ItemResponse> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ` + this.bearer
+    });
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString())
+      .set('order', order)
+      .set('field', field);
+    return this.http.get<ItemResponse>(`${this.apiUrl}/ordered`, { headers, params });
+  }
+  
 
 }

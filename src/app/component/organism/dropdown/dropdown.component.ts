@@ -1,5 +1,5 @@
-import { Component, ElementRef, HostListener, Input, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { Component, ElementRef, HostListener, Input, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { EnumSize } from 'src/app/shared/constant/enumSize';
 import { Brand } from 'src/app/shared/models/brand';
 import { Category } from 'src/app/shared/models/category';
@@ -16,28 +16,33 @@ import { ValidationsService } from 'src/app/shared/service/validations/validatio
 export class DropdownComponent implements OnInit {
 
   @Input() formField!: FormField;
-
   @ViewChild('dropdownContainer') dropdownContainer!: ElementRef;
+  @Input() resetSelection: boolean = false;
 
   size = EnumSize.Small;
-
   isOpen = false;
   selectedItems: (Brand | Category)[] = [];
   filteredItems: (Brand | Category)[] = [];
-  data:(Brand | Category)[] = [];
+  data: (Brand | Category)[] = [];
 
   constructor(
     private readonly categoryService: CategoryService,
-    private readonly brandService:BrandService 
-  ){}
+    private readonly brandService: BrandService
+  ) { }
 
   ngOnInit(): void {
     this.loadData(this.formField.label);
-    const control = this.formField.control
+    const control = this.formField.control;
 
     control.valueChanges.subscribe(() => {
       this.updateErrorMessage(control);
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['resetSelection'] && changes['resetSelection'].currentValue === true) {
+      this.clearAllSelections();
+    }
   }
 
   updateErrorMessage(control: FormControl): void {
@@ -77,19 +82,28 @@ export class DropdownComponent implements OnInit {
   }
 
   toggleDropdown() {
-    this.isOpen = !this.isOpen;
+    if (!this.isInputDisabled()) {
+      this.isOpen = !this.isOpen;
+    }
   }
 
   setDropdownState(state: boolean) {
-    this.isOpen = state;
+    if (!this.isInputDisabled()) {
+      this.isOpen = state;
+    }
   }
 
   selectItem(item: Brand | Category) {
     const index = this.selectedItems.findIndex(selected => selected.id === item.id);
-    index >= 0 ? this.selectedItems.splice(index, 1) : this.selectedItems.push(item);
-    this.formField.control.setValue(this.selectedItems.map(selected => selected.id));
+    if (index >= 0) {
+      this.selectedItems.splice(index, 1);
+    } else {
+      this.selectedItems.push(item);
+    }
+    const selectedIds = this.selectedItems.map(selected => selected.id);
+    this.formField.control.setValue(selectedIds);
+    this.formField.control.markAsDirty();
   }
-  
 
   isSelected(item: Brand | Category): boolean {
     return this.selectedItems.some(selected => selected.id === item.id);
@@ -115,11 +129,10 @@ export class DropdownComponent implements OnInit {
   }
 
   private filterItems(searchTerm: string) {
-    this.filteredItems = this.data.filter(item => 
+    this.filteredItems = this.data.filter(item =>
       item.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }
-  
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
@@ -134,7 +147,7 @@ export class DropdownComponent implements OnInit {
   }
 
   isInputDisabled(): boolean {
-    const max = this.formField.label === 'Categoria' ? 3 : 1;
+    const max = this.formField.length ?? Infinity;
     return this.selectedItems.length >= max;
   }
 }

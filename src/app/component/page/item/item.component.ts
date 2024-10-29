@@ -4,11 +4,10 @@ import { PageConstants } from 'src/app/shared/constant/stringConstants/pageConst
 import { Category } from 'src/app/shared/models/category';
 import { Brand } from 'src/app/shared/models/brand';
 import { Item } from 'src/app/shared/models/Item';
-import { BrandService } from 'src/app/shared/service/brand/brand.service';
-import { CategoryService } from 'src/app/shared/service/category/category.service';
 import { ItemService } from 'src/app/shared/service/item/item.service';
 import { ValidationsService } from 'src/app/shared/service/validations/validations.service';
 import { ItemRequest } from 'src/app/shared/models/ItemRequest';
+import { DisplayItem } from 'src/app/shared/models/displayItem';
 
 @Component({
   selector: 'app-item',
@@ -16,23 +15,21 @@ import { ItemRequest } from 'src/app/shared/models/ItemRequest';
   styleUrls: ['./item.component.scss']
 })
 export class ItemComponent {
-
-  constructor(
-    private readonly itemService: ItemService
-  ) {}
+  constructor(private readonly itemService: ItemService) {}
 
   ngOnInit(): void {
     this.loadData(this.pagination.page, this.pagination.size, this.pagination.order);
   }
 
+  currentSortField: string = 'name';
+  isDescendingOrder: boolean = true;
   formName = PageConstants.FORM_NAME_I;
   button = {
     label: PageConstants.BUTTON_LABEL,
     size: EnumSize.Medium
   };
   errorMessage: string | null = null;
-
-  items: Item[] = [];
+  items: DisplayItem[] = [];
 
   formFieldsConfig = [
     {
@@ -43,8 +40,8 @@ export class ItemComponent {
       validations: {
         type: 'string',
         required: true,
-        min: PageConstants.MIN_LENGTH, 
-        max: PageConstants.MAX_NAME_LENGTH, 
+        min: PageConstants.MIN_LENGTH,
+        max: PageConstants.MAX_NAME_LENGTH,
         pattern: PageConstants.PATTERN
       }
     },
@@ -56,7 +53,7 @@ export class ItemComponent {
       validations: {
         type: 'string',
         required: true,
-        min: PageConstants.MIN_LENGTH, 
+        min: PageConstants.MIN_LENGTH,
         max: PageConstants.MAX_DESCRIPTION_LENGTH_2
       }
     },
@@ -67,7 +64,7 @@ export class ItemComponent {
       size: EnumSize.Medium,
       validations: {
         isInteger: true,
-        min: 0, 
+        min: 0,
         type: 'number',
         required: true,
       }
@@ -83,7 +80,7 @@ export class ItemComponent {
       }
     },
     {
-      name: 'categoryId',
+      name: 'category',
       label: 'Categoria',
       type: 'dropdown',
       size: EnumSize.Medium,
@@ -94,12 +91,12 @@ export class ItemComponent {
       }
     },
     {
-      name: 'brandId',
+      name: 'brand',
       label: 'Marca',
       type: 'dropdown',
       size: EnumSize.Medium,
       validations: {
-        type: 'number',
+        type: 'list',
         max: 1,
         required: true,
       }
@@ -110,6 +107,10 @@ export class ItemComponent {
     { text: PageConstants.ID, isButton: false },
     { text: PageConstants.LABEL_NAME.toUpperCase(), isButton: true },
     { text: PageConstants.LABEL_DESCRIPTION.toUpperCase(), isButton: false },
+    { text: "Existencias".toUpperCase(), isButton: false },
+    { text: "Precio".toUpperCase(), isButton: false },
+    { text: "Categoria".toUpperCase(), isButton: true },
+    { text: "Marca".toUpperCase(), isButton: true },
   ];
 
   pagination = {
@@ -119,54 +120,86 @@ export class ItemComponent {
     order: PageConstants.ORDER
   }
 
-  loadData(page: number, size: number, order: string = this.pagination.order): void {
-    this.itemService.getItem(page - PageConstants.FIRST, size, order).subscribe({
-      next: (paginationData) => {
-        this.items = paginationData.content;
-        this.pagination.totalPages = paginationData.totalPages;
-      },
-      error: (error) => {
-        console.error(PageConstants.ERROR_ITEMS, error);
-      }
-    });
+  loadData(page: number, size: number, order: string = this.pagination.order, orderField: string = this.currentSortField): void {
+    if (orderField === 'name') {
+      // Llama al endpoint sin campo específico de ordenación
+      this.itemService.getItem(page - PageConstants.FIRST, size, order).subscribe({
+        next: (paginationData) => {
+          this.items = this.transformToDisplayItems(paginationData.content);
+          this.pagination.totalPages = paginationData.totalPages;
+        },
+        error: (error) => {
+          console.error(PageConstants.ERROR_ITEMS, error);
+        }
+      });
+    } else {
+      // Llama al endpoint con campo específico de ordenación (category o brand)
+      this.itemService.getItemByField(page - PageConstants.FIRST, size, order, orderField).subscribe({
+        next: (paginationData) => {
+          this.items = this.transformToDisplayItems(paginationData.content);
+          this.pagination.totalPages = paginationData.totalPages;
+        },
+        error: (error) => {
+          console.error(PageConstants.ERROR_ITEMS, error);
+        }
+      });
+    }
   }
 
-  onSortChange(order: string): void {
-    this.pagination.order = order; 
+  onSortChange(sortData: { field: string, order: string }): void {
+    const { field, order } = sortData;
+
+    this.currentSortField = field;
+    this.isDescendingOrder = order === 'desc';
+
+    this.pagination.order = order;
     this.pagination.page = PageConstants.FIRST;
-    this.loadData(this.pagination.page, this.pagination.size, this.pagination.order);
+
+    this.loadData(this.pagination.page, this.pagination.size, this.pagination.order, this.currentSortField);
   }
 
   onPageChange(newPage: number): void {
     this.pagination.page = newPage;
-    this.loadData(this.pagination.page, this.pagination.size);
+    this.loadData(this.pagination.page, this.pagination.size, this.pagination.order, this.currentSortField);
   }
 
-  onFormSubmit(itemData: Item | Brand | Category) {
-    let item: ItemRequest | undefined;
-
-    // Check for necessary properties in itemData
-    if ('quantity' in itemData && 'price' in itemData && 'category' in itemData && 'brand' in itemData) {
-      item = {
-        name: itemData.name,
-        description: itemData.description,
-        quantity: itemData.quantity,
-        price: itemData.price,
-        category: itemData.category.map((category: Category) => category.id), 
-        brand: itemData.brand.id 
+  onFormSubmit(data: ItemRequest | Brand | Category) {
+    if (this.isItemRequestData(data)) {
+      const itemRequest: ItemRequest = {
+        name: data.name,
+        description: data.description,
+        quantity: Number(data.quantity),
+        price: Number(data.price),
+        category: data.category,
+        brand: Number(data.brand)
       };
-      console.log(item);
-
-      this.itemService.createItem(item).subscribe({
+      this.itemService.createItem(itemRequest).subscribe({
         next: () => {
           this.loadData(this.pagination.page, this.pagination.size, this.pagination.order);
         },
         error: (error) => {
+          console.error("Error en createItem:", error);
           this.errorMessage = ValidationsService.validateCategory(error);
         }
       });
     } else {
-        console.error("Invalid item data submitted:", itemData);
+      console.error("Datos no válidos recibidos en onSubmit:", data);
     }
-}
+  }
+
+  private isItemRequestData(data: any): data is ItemRequest {
+    return 'quantity' in data && 'price' in data && 'category' in data && 'brand' in data;
+  }
+
+  transformToDisplayItems(items: Item[]): DisplayItem[] {
+    return items.map(item => ({
+      id: item.id,
+      name: item.name,
+      description: item.description,
+      quantity: item.quantity,
+      price: item.price,
+      category: item.category.map(category => category.name),
+      brand: item.brand.name
+    }));
+  }
 }

@@ -93,14 +93,13 @@ export class ValidationsService {
     const listValidators: ValidatorFn[] = [];
     if (validations.max !== undefined) {
       listValidators.push((control: AbstractControl) =>
-        Array.isArray(control.value) && control.value.length <= validations.max! 
+        Array.isArray(control.value) && control.value.length <= validations.max!
           ? null 
-          : { maxLengthExceeded: true }
+          : { maxLengthExceeded: { requiredLength: validations.max, actualLength: control.value?.length || 0 } }
       );
     }
     return listValidators;
   }
-  
 
   static validateCategory(error: any): string | null {
     if (error.status === ErrorStatus.Forbidden) {

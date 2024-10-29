@@ -9,19 +9,25 @@ import { Item } from 'src/app/shared/models/Item';
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss']
 })
-export class TableComponent  {
+export class TableComponent {
 
   @Input() labels: { text: string, isButton: boolean }[] = [];
   @Input() values: (Category | Brand | Item)[][] = [];
+  @Output() sortChange = new EventEmitter<{ field: string, order: string }>();
 
-  @Output() sortChange = new EventEmitter<string>();
+  currentSortField: string | null = null;
+  isAscending: { [key: string]: boolean } = {};
 
-  isAscending: boolean = true;
+  toggleSortOrder(field: string): void {
+    this.isAscending[field] = !this.isAscending[field];
 
-  toggleSortOrder(): void {
-    this.isAscending = !this.isAscending; 
-    const order = this.isAscending ? MoleculeConstants.ORDER_UP : MoleculeConstants.ORDER_DOWN; 
-    this.sortChange.emit(order);
+    for (const key in this.isAscending) {
+      if (key !== field) {
+        this.isAscending[key] = true;
+      }
+    }
+
+    const order = this.isAscending[field] ? 'asc' : 'desc';
+    this.sortChange.emit({ field, order });
   }
-
 }
