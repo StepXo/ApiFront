@@ -34,7 +34,7 @@ export class BrandService {
     return this.http.get<BrandResponse>(this.apiUrl, { headers, params });
   }
 
-  private brandSubject = new BehaviorSubject<Brand[]>([]);
+  private readonly brandSubject = new BehaviorSubject<Brand[]>([]);
   brands$ = this.brandSubject.asObservable();
 
   getBrandList(): Observable<Brand[]> {

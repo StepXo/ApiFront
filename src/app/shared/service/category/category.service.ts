@@ -11,7 +11,6 @@ import { environment } from 'src/environments/environment';
 export class CategoryService {
   private readonly apiUrl = `${environment.apiStock}/category`;
   
-  // Aquí se establece el token
   private readonly bearer: string = `Bearer ${environment.token}`;
 
   constructor(private readonly http: HttpClient) { }
@@ -34,7 +33,7 @@ export class CategoryService {
     return this.http.get<CategoryResponse>(this.apiUrl, { headers, params });
   }
 
-  private categorySubject = new BehaviorSubject<Category[]>([]);
+  private readonly categorySubject = new BehaviorSubject<Category[]>([]);
   categories$ = this.categorySubject.asObservable();
 
   getCategoryList(): Observable<Category[]> {

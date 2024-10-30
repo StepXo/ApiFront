@@ -57,12 +57,13 @@ describe('BrandComponent', () => {
 
   it('should handle error when loading data', () => {
     console.error = jest.fn();
-    brandService.getBrands.mockReturnValue(throwError('Error fetching brands')); 
-
+    brandService.getBrands.mockReturnValue(throwError(() => new Error('Error fetching brands'))); 
+  
     component.loadData(1, 5, 'asc');
-
-    expect(console.error).toHaveBeenCalledWith('Error fetching brands', 'Error fetching brands'); 
+  
+    expect(console.error).toHaveBeenCalledWith('Error fetching brands', new Error('Error fetching brands')); 
   });
+  
 
   it('should update pagination and load data on page change', () => {
     brandService.getBrands.mockReturnValue(of(mockBrandResponse)); 
@@ -75,19 +76,19 @@ describe('BrandComponent', () => {
 
   it('should update order and reload data on sort change', () => {
     brandService.getBrands.mockReturnValue(of(mockBrandResponse)); 
-
-    component.onSortChange('desc');
-
+  
+    component.onSortChange({ field: 'name', order: 'desc' });
+  
     expect(component.pagination.order).toBe('desc');
     expect(component.pagination.page).toBe(1);
     expect(brandService.getBrands).toHaveBeenCalledWith(0, 5, 'desc'); 
   });
+  
 
   it('should call createBrand and reload data on successful submission', () => {
-    const formData = { name: 'Test Brand', description: 'Brand description' };
-    const createdBrand: Brand = { id: 3, name: 'Test Brand', description: 'Brand description' }; 
+    const formData: Brand = { id: 3, name: 'Test Brand', description: 'Brand description' }; 
 
-    brandService.createBrand.mockReturnValue(of(createdBrand)); 
+    brandService.createBrand.mockReturnValue(of(formData)); 
     brandService.getBrands.mockReturnValue(of(mockBrandResponse));
 
     component.onFormSubmit(formData);
@@ -95,10 +96,10 @@ describe('BrandComponent', () => {
     expect(brandService.createBrand).toHaveBeenCalledWith(formData);
     expect(brandService.getBrands).toHaveBeenCalledTimes(1); 
     expect(component.brands).toEqual(mockBrands);
-});
+  });
 
   it('should handle error when createBrand fails', () => {
-    const formData = { name: 'Test Brand', description: 'Brand description' };
+    const formData: Brand = { id: 3, name: 'Test Brand', description: 'Brand description' };
     const errorResponse = { message: 'An error occurred' };
 
     brandService.createBrand.mockReturnValue(throwError(() => errorResponse));

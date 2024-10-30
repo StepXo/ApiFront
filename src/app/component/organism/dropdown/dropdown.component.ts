@@ -58,28 +58,29 @@ export class DropdownComponent implements OnInit {
 
   loadData(name: string): void {
     if (name === 'Categoria') {
-      this.categoryService.getCategoryList().subscribe(
-        data => {
+      this.categoryService.getCategoryList().subscribe({
+        next: (data) => {
           this.data = data;
           this.filteredItems = [...this.data];
         },
-        error => {
+        error: (error) => {
           console.error('Error loading categories:', error);
         }
-      );
+      });
     }
     if (name === 'Marca') {
-      this.brandService.getBrandList().subscribe(
-        data => {
+      this.brandService.getBrandList().subscribe({
+        next: (data) => {
           this.data = data;
           this.filteredItems = [...this.data];
         },
-        error => {
+        error: (error) => {
           console.error('Error loading brands:', error);
         }
-      );
+      });
     }
   }
+  
 
   toggleDropdown() {
     if (!this.isInputDisabled()) {

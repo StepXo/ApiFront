@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl, FormBuilder, FormGroup, Validators, ValidatorFn } from '@angular/forms';
+import { FormControl, FormBuilder, FormGroup, ValidatorFn } from '@angular/forms';
 import { EnumSize } from 'src/app/shared/constant/enumSize';
 import { OrganismConstants } from 'src/app/shared/constant/stringConstants/organismConstants';
 import { Brand } from 'src/app/shared/models/brand';
@@ -35,6 +35,7 @@ export class FormComponent implements OnInit {
 
   ngOnInit() {
     this.initializeForm();
+    this.form.updateValueAndValidity();
   }
 
   private initializeForm() {
@@ -96,11 +97,14 @@ export class FormComponent implements OnInit {
     if (field) {
       field.message = this.getErrorMessage(control);
     }
+    this.form.updateValueAndValidity();
   }
-
+  
   getErrorMessage(control: FormControl): string | null {
     return ValidationsService.validateInput(control);
   }
+  
+  
 
   onSubmit() {
     this.errorMessage = null;

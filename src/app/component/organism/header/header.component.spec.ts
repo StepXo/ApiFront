@@ -36,7 +36,7 @@ describe('HeaderComponent', () => {
       { name: 'Inicio', link: '/home' },
       { name: 'Categorias', link: '/category' },
       { name: 'Marcas', link: '/brand' },
-      { name: 'Articulos', link: '/Item' },
+      { name: 'Articulos', link: '/item' },
     ]); 
   });
 });

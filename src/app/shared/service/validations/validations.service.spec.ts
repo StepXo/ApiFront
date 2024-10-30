@@ -70,4 +70,116 @@ describe('ValidationsService', () => {
       expect(ValidationsService.validateCategory(error)).toBe('Error desconocido, por favor inténtalo de nuevo.');
     });
   });
+
+  describe('validateBrand', () => {
+    it('should return correct message for status ErrorStatus.Forbidden', () => {
+      const error = { status: ErrorStatus.Forbidden };
+      expect(ValidationsService.validateBrand(error)).toBe('No estás autorizado o el token ha vencido.');
+    });
+
+    it('should return correct message for status ErrorStatus.Conflict', () => {
+      const error = { status: ErrorStatus.Conflict };
+      expect(ValidationsService.validateBrand(error)).toBe('Ya existe una marca con ese nombre.');
+    });
+
+    it('should return default error message for unknown status', () => {
+      const error = { status: 500 };
+      expect(ValidationsService.validateBrand(error)).toBe('Error desconocido, por favor inténtalo de nuevo.');
+    });
+  });
+
+  describe('isNumber', () => {
+    it('should return true for valid numbers', () => {
+      expect(ValidationsService.isNumber(123)).toBe(true);
+      expect(ValidationsService.isNumber('123')).toBe(true);
+    });
+
+    it('should return true for null or empty string', () => {
+      expect(ValidationsService.isNumber(null)).toBe(true);
+      expect(ValidationsService.isNumber('')).toBe(true);
+    });
+
+    it('should return false for non-numeric strings', () => {
+      expect(ValidationsService.isNumber('abc')).toBe(false);
+    });
+  });
+
+  describe('isInteger', () => {
+    it('should return true for valid integers', () => {
+      expect(ValidationsService.isInteger(123)).toBe(true);
+      expect(ValidationsService.isInteger('123')).toBe(true);
+    });
+
+    it('should return true for null or empty string', () => {
+      expect(ValidationsService.isInteger(null)).toBe(true);
+      expect(ValidationsService.isInteger('')).toBe(true);
+    });
+
+    it('should return false for non-integer values', () => {
+      expect(ValidationsService.isInteger(123.45)).toBe(false);
+      expect(ValidationsService.isInteger('123.45')).toBe(false);
+    });
+  });
+  describe('getValidators', () => {
+    it('should return required validator if validations.required is true', () => {
+      const validators = ValidationsService.getValidators({ type: 'string', required: true });
+      const control = new FormControl('');
+      control.setValidators(validators);
+      control.updateValueAndValidity();
+      expect(control.errors?.['required']).toBeTruthy();
+    });
+  
+    it('should return pattern validator if validations.pattern is set', () => {
+      const pattern = '[a-z]+';
+      const validators = ValidationsService.getValidators({ type: 'string', pattern });
+      const control = new FormControl('123');
+      control.setValidators(validators);
+      control.updateValueAndValidity();
+      expect(control.errors?.['pattern']).toBeTruthy();
+    });
+  
+    it('should return email validator if validations.email is true', () => {
+      const validators = ValidationsService.getValidators({ type: 'string', email: true });
+      const control = new FormControl('invalid-email');
+      control.setValidators(validators);
+      control.updateValueAndValidity();
+      expect(control.errors?.['email']).toBeTruthy();
+    });
+  
+    it('should return minLength validator for type string', () => {
+      const validators = ValidationsService.getValidators({ type: 'string', min: 3 });
+      const control = new FormControl('ab');
+      control.setValidators(validators);
+      control.updateValueAndValidity();
+      expect(control.errors?.['minlength']).toBeTruthy();
+    });
+  
+    it('should return max validator for type number', () => {
+      const validators = ValidationsService.getValidators({ type: 'number', max: 10 });
+      const control = new FormControl(11);
+      control.setValidators(validators);
+      control.updateValueAndValidity();
+      expect(control.errors?.['max']).toBeTruthy();
+    });
+  
+    it('should include integer validator if isInteger is true', () => {
+      const validators = ValidationsService.getValidators({ type: 'number', isInteger: true });
+      const control = new FormControl(12.5);
+      control.setValidators(validators);
+      control.updateValueAndValidity();
+      expect(control.errors?.['notAInteger']).toBeTruthy();
+    });
+  
+    it('should return maxLengthExceeded error for array length greater than max in list validator', () => {
+      const validators = ValidationsService.getValidators({ type: 'list', max: 2 });
+      const control = new FormControl([1, 2, 3]);
+      control.setValidators(validators);
+      control.updateValueAndValidity();
+      expect(control.errors?.['maxLengthExceeded']).toEqual({
+        requiredLength: 2,
+        actualLength: 3,
+      });
+    });
+  });
+  
 });
