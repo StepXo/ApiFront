@@ -1,12 +1,13 @@
-<div class="dropdown-container medium">
-    <div class="selected-items">
-      <app-button *ngFor="let item of selectedItems" 
-        (click)="removeItem(item)"
-        [label]="item.name + ' ✖'"
-        [size]="size">
-      </app-button>
-    </div>
-  
+<div #dropdownContainer [ngClass]="{'dropdown-container': true, 'medium': true, 'error': formField.control.invalid && (formField.control.touched || formField.control.dirty)}">
+  <div class="selected-items">
+    <app-button *ngFor="let item of selectedItems" 
+      (click)="removeItem(item)"
+      [label]="item.name + ' ✖'"
+      [size]="size">
+    </app-button>
+  </div>
+
+  <ng-container *ngIf="!isInputDisabled()">
     <input
       type="text"
       class="search-input"
@@ -14,28 +15,34 @@
       (input)="onInputChange($event)"
       (focus)="setDropdownState(true)"
     />
-  
+    
     <app-pagination-button 
+      class="dropdown-toggle"
+      [ngClass]="{'disabled': isInputDisabled()}"
       [label]="isOpen ? '▲' : '▼'"
       (click)="toggleDropdown()">
     </app-pagination-button>
+  </ng-container>
+</div>
+
+<div *ngIf="isOpen" class="dropdown-options">
+  <app-button 
+    label="Borrar Todo"
+    [size]="size"
+    (click)="clearAllSelections()">
+  </app-button>
+
+  <div *ngFor="let item of filteredItems" 
+    class="checkbox-container" 
+    (click)="selectItem(item)">
+    <label class="checkbox">
+      <input type="checkbox" [checked]="isSelected(item)" />
+      <span class="checkmark"></span>
+      {{ item.name }}
+    </label>
   </div>
-  
-  <div *ngIf="isOpen" class="dropdown-options">
-    <app-button 
-      label="Borrar Todo"
-      [size]="size"
-      (click)="clearAllSelections()">
-    </app-button>
-    
-    <div *ngFor="let item of filteredItems" 
-         class="checkbox-container" 
-         (click)="selectItem(item)">
-      <label class="checkbox">
-        <input type="checkbox" [checked]="isSelected(item)" />
-        <span class="checkmark"></span>
-        {{ item.name }}
-      </label>
-    </div>
-  </div>
-  
+</div>
+
+<app-error-label *ngIf="formField.control.invalid && (formField.control.touched ||formField.control.dirty)" 
+[message]="formField.message"
+></app-error-label>

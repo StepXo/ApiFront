@@ -11,8 +11,7 @@ export class PaginationComponent {
   @Input() page: number = MoleculeConstants.ONE; 
   @Input() totalPages: number = MoleculeConstants.ONE;
   @Output() pageChange = new EventEmitter<number>();
-  @Output() sortChange = new EventEmitter<string>();
-  @Output() sizeChange = new EventEmitter<number>();
+  @Output() sortChange = new EventEmitter<{ field: string, order: string }>();
   @Output() tableSizeChange = new EventEmitter<number>();
 
   tableSizes = [
@@ -21,6 +20,7 @@ export class PaginationComponent {
   ];
   pages: (number | string)[] = [];
   isAscending: boolean = true;
+  currentSortField: string = 'name';
 
   updateVisiblePages(): void {
     const pagesArray: (number | string)[] = [];
@@ -112,10 +112,11 @@ export class PaginationComponent {
     }
   }
 
-  toggleSortOrder(): void {
-    this.isAscending = !this.isAscending; 
-    const order = this.isAscending ? MoleculeConstants.ORDER_UP : MoleculeConstants.ORDER_DOWN; 
-    this.sortChange.emit(order);
+  toggleSortOrder(field: string): void {
+    this.isAscending = this.currentSortField === field ? !this.isAscending : true;
+    this.currentSortField = field;
+    const order = this.isAscending ? 'asc' : 'desc';
+    this.sortChange.emit({ field, order });
   }
 
   updateTableSize(newSize: string | number): void {

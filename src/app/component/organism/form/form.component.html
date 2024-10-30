@@ -1,21 +1,20 @@
 <form [formGroup]="form" class="form" (ngSubmit)="onSubmit()">
-  
   <h2>{{ formName }}</h2>
 
   <app-input-group [fields]="formFields"></app-input-group>
 
-  <div *ngFor="let dropdownField of dropdownFields">
-    <app-dropdown [formField]="dropdownField"></app-dropdown>
+  <div *ngFor="let dropdownField of dropdownFields" class="spacing">
+    <app-dropdown 
+      [formField]="dropdownField"
+      [resetSelection]="resetDropdownSelection">
+    </app-dropdown>
   </div>
   
-  <app-error-label *ngIf="errorMessage"
-    [message]="errorMessage"
-  ></app-error-label>
+  <app-error-label *ngIf="errorMessage" [message]="errorMessage"></app-error-label>
 
   <app-button
     [label]="button.label"
-    [size] = "button.size"
-    [isDisabled]="isDisabled"
-  ></app-button>
-
+    [size]="button.size"
+    [isDisabled]="isDisabled">
+  </app-button>
 </form>

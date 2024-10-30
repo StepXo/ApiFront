@@ -136,7 +136,7 @@ describe('PaginationComponent', () => {
   });
 
   it('should load previous page and emit pageChange event', () => {
-    component.page = 3; // Establece la página actual
+    component.page = 3;
     jest.spyOn(component.pageChange, 'emit');
     component.loadPreviousPage();
     expect(component.page).toBe(2);
@@ -144,8 +144,8 @@ describe('PaginationComponent', () => {
   });
 
   it('should load next page and emit pageChange event', () => {
-    component.page = 2; // Establece la página actual
-    component.totalPages = 5; // Asegúrate de que haya más páginas
+    component.page = 2; 
+    component.totalPages = 5;
     jest.spyOn(component.pageChange, 'emit');
     component.loadNextPage();
     expect(component.page).toBe(3);
@@ -155,12 +155,32 @@ describe('PaginationComponent', () => {
   it('should toggle sort order and emit sortChange event', () => {
     jest.spyOn(component.sortChange, 'emit');
     
-    component.toggleSortOrder();
+    component.toggleSortOrder('name');
     expect(component.isAscending).toBe(false);
-    expect(component.sortChange.emit).toHaveBeenCalledWith('desc');
+    expect(component.sortChange.emit).toHaveBeenCalledWith({ field: 'name', order: 'desc' });
 
-    component.toggleSortOrder();
+    component.toggleSortOrder('name');
     expect(component.isAscending).toBe(true);
-    expect(component.sortChange.emit).toHaveBeenCalledWith('asc');
+    expect(component.sortChange.emit).toHaveBeenCalledWith({ field: 'name', order: 'asc' });
+  });
+
+  it('should emit tableSizeChange when updateTableSize is called', () => {
+    jest.spyOn(component.tableSizeChange, 'emit');
+    component.updateTableSize(10);
+    expect(component.tableSizeChange.emit).toHaveBeenCalledWith(10);
+  });
+
+  it('should update visible pages correctly for totalPages greater than 5 with current page in the middle', () => {
+    component.totalPages = 10;
+    component.page = 6;
+    component.updateVisiblePages();
+    expect(component.pages).toEqual([1, '...', 5, 6, 7, '...', 10]);
+  });
+
+  it('should reset isAscending to true when a different field is sorted', () => {
+    component.toggleSortOrder('name');
+    expect(component.isAscending).toBe(false);
+    component.toggleSortOrder('price');
+    expect(component.isAscending).toBe(true);
   });
 });

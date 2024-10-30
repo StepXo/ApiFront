@@ -2,9 +2,14 @@ export const errorMessages: { [key: string]: string | ((error: any) => string) }
   required: 'Este campo es requerido.',
   minlength: (error) => `Debe tener al menos ${error.requiredLength} caracteres.`,
   maxlength: (error) => `No puede tener más de ${error.requiredLength} caracteres.`,
+  min: (error) => `Debe ser mayor o igual a ${error.min}. Valor actual: ${error.actual}.`,
+  max: (error) => `Debe ser menor o igual a ${error.max}. Valor actual: ${error.actual}.`,
   email: 'Debe ser un correo electrónico válido.',
   pattern: 'El formato no es válido.',
+  notANumber: 'El valor debe ser un número.',
+  notAInteger: 'El valor debe ser un número entero.',
   token: 'No estás autorizado o el token ha vencido.',
-  category:'Ya existe una categoría con ese nombre.',
-  genericError:'Error desconocido, por favor inténtalo de nuevo.',
-}; 
+  category: 'Ya existe una categoría con ese nombre.',
+  brand: 'Ya existe una marca con ese nombre.',
+  genericError: 'Error desconocido, por favor inténtalo de nuevo.',
+};

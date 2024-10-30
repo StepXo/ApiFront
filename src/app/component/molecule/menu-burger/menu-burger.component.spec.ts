@@ -38,7 +38,7 @@ describe('MenuBurgerComponent', () => {
   });
 
   it('should toggle menu visibility on button click', () => {
-    const buttonElement = fixture.debugElement.query(By.css('.togle-menu')).nativeElement;
+    const buttonElement = fixture.debugElement.query(By.css('.toggle-menu')).nativeElement;
 
     expect(component.menuVisible).toBeFalsy();
     expect(fixture.debugElement.query(By.css('nav')).classes['visible']).toBeFalsy();

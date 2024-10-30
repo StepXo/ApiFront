@@ -5,16 +5,18 @@
         <ng-container *ngIf="!label.isButton; else buttonTemplate">
           {{ label.text }}
         </ng-container>
+
         <ng-template #buttonTemplate>
           <app-pagination-button 
             [label]="label.text"
-            [isAscending]="isAscending"
-            (click)="toggleSortOrder()">
+            [isAscending]="isAscending[label.text]"
+            (click)="toggleSortOrder(label.text)">
           </app-pagination-button>
         </ng-template>
       </th>
     </tr>
   </thead>
+
   <tbody>
     <tr *ngFor="let content of values">
       <td *ngFor="let value of content">{{ value }}</td>

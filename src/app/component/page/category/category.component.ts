@@ -1,9 +1,12 @@
 import { Component } from '@angular/core';
 import { EnumSize } from 'src/app/shared/constant/enumSize';
 import { PageConstants } from 'src/app/shared/constant/stringConstants/pageConstants';
+import { Brand } from 'src/app/shared/models/brand';
 import { Category } from 'src/app/shared/models/category';
+import { Item } from 'src/app/shared/models/Item';
+import { ItemRequest } from 'src/app/shared/models/ItemRequest';
 import { CategoryService } from 'src/app/shared/service/category/category.service';
-import { ValidationsComponent } from 'src/app/shared/utils/validations/validations.component';
+import { ValidationsService } from 'src/app/shared/service/validations/validations.service';
 
 @Component({
   selector: 'app-category',
@@ -25,6 +28,7 @@ export class CategoryComponent   {
       type: PageConstants.INPUT,
       size: EnumSize.Medium,
       validations: {
+        type:'string',
         required: true,
         min: PageConstants.MIN_LENGTH, 
         max: PageConstants.MAX_NAME_LENGTH, 
@@ -37,6 +41,7 @@ export class CategoryComponent   {
       type: PageConstants.TEXT_AREA,
       size: EnumSize.Medium,
       validations: {
+        type:'string',
         required: true,
         min: PageConstants.MIN_LENGTH, 
         max: PageConstants.MAX_DESCRIPTION_LENGTH_1
@@ -49,7 +54,7 @@ export class CategoryComponent   {
   labels: { text: string, isButton: boolean }[] = [
     { text: PageConstants.ID, isButton: false },
     { text: PageConstants.LABEL_NAME.toUpperCase(), isButton: true },
-    { text: PageConstants.LABEL_DESCRIPTION.toLowerCase(), isButton: false }
+    { text: PageConstants.LABEL_DESCRIPTION.toUpperCase(), isButton: false },
   ];
 
   pagination = {
@@ -77,10 +82,10 @@ export class CategoryComponent   {
     });
   }
 
-  onSortChange(order: string): void {
-    this.pagination.order = order; 
+  onSortChange(sortData: { field: string, order: string }): void {
+    this.pagination.order = sortData.order;
     this.pagination.page = PageConstants.FIRST;
-    this.loadData(this.pagination.page, this.pagination.size, this.pagination.order);
+    this.loadData(this.pagination.page, this.pagination.size, sortData.order);
   }
 
   onPageChange(newPage: number): void {
@@ -88,15 +93,14 @@ export class CategoryComponent   {
     this.loadData(this.pagination.page, this.pagination.size);
   }
 
-  onFormSubmit(categoryData: any) {
-    console.log(categoryData);
+  onFormSubmit(categoryData: Category | Brand | ItemRequest) {
     this.categoryService.createCategory(categoryData).subscribe({
-        next: () => {
-            this.loadData(this.pagination.page, this.pagination.size, this.pagination.order);
-        },
-        error: (error) => {
-            this.errorMessage = ValidationsComponent.validateCategory(error);
-        }
+      next: () => {
+        this.loadData(this.pagination.page, this.pagination.size, this.pagination.order);
+      },
+      error: (error) => {
+        this.errorMessage = ValidationsService.validateCategory(error);
+      }
     });
   }
 }

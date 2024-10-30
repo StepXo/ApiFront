@@ -3,7 +3,7 @@ import { CategoryComponent } from './category.component';
 import { CategoryService } from 'src/app/shared/service/category/category.service'; 
 import { of, throwError } from 'rxjs';
 import { Category } from 'src/app/shared/models/category'; 
-import { ValidationsComponent } from 'src/app/shared/utils/validations/validations.component';
+import { ValidationsService } from 'src/app/shared/service/validations/validations.service';
 
 describe('CategoryComponent', () => { 
   let component: CategoryComponent; 
@@ -57,12 +57,13 @@ describe('CategoryComponent', () => {
 
   it('should handle error when loading data', () => {
     console.error = jest.fn();
-    categoryService.getCategories.mockReturnValue(throwError('Error fetching categories')); 
-
+    categoryService.getCategories.mockReturnValue(throwError(() => new Error('Error fetching categories'))); 
+  
     component.loadData(1, 5, 'asc');
-
-    expect(console.error).toHaveBeenCalledWith('Error fetching categories', 'Error fetching categories'); 
+  
+    expect(console.error).toHaveBeenCalledWith('Error fetching categories', new Error('Error fetching categories')); 
   });
+  
 
   it('should update pagination and load data on page change', () => {
     categoryService.getCategories.mockReturnValue(of(mockCategoryResponse)); 
@@ -75,19 +76,19 @@ describe('CategoryComponent', () => {
 
   it('should update order and reload data on sort change', () => {
     categoryService.getCategories.mockReturnValue(of(mockCategoryResponse)); 
-
-    component.onSortChange('desc');
-
+  
+    component.onSortChange({ field: 'name', order: 'desc' });
+  
     expect(component.pagination.order).toBe('desc');
     expect(component.pagination.page).toBe(1);
     expect(categoryService.getCategories).toHaveBeenCalledWith(0, 5, 'desc'); 
   });
+  
 
   it('should call createCategory and reload data on successful submission', () => {
-    const formData = { name: 'Test Category', description: 'Category description' };
-    const createdCategory: Category = { id: 3, name: 'Test Category', description: 'Category description' }; 
+    const formData: Category = { id: 3, name: 'Test Category', description: 'Category description' }; 
 
-    categoryService.createCategory.mockReturnValue(of(createdCategory)); 
+    categoryService.createCategory.mockReturnValue(of(formData)); 
     categoryService.getCategories.mockReturnValue(of(mockCategoryResponse));
 
     component.onFormSubmit(formData);
@@ -98,11 +99,11 @@ describe('CategoryComponent', () => {
   });
 
   it('should handle error when createCategory fails', () => {
-    const formData = { name: 'Test Category', description: 'Category description' };
+    const formData: Category = { id: 3, name: 'Test Category', description: 'Category description' };
     const errorResponse = { message: 'An error occurred' };
 
     categoryService.createCategory.mockReturnValue(throwError(() => errorResponse));
-    jest.spyOn(ValidationsComponent, 'validateCategory').mockReturnValue('Validation error occurred');
+    jest.spyOn(ValidationsService, 'validateCategory').mockReturnValue('Validation error occurred');
 
     component.onFormSubmit(formData);
 

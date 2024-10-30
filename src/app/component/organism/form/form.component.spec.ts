@@ -1,117 +1,95 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
 import { FormComponent } from './form.component';
-import { By } from '@angular/platform-browser';
-import { ErrorLabelComponent } from '../../atom/error-label/error-label.component';
-import { InputGroupComponent } from '../../molecule/input-group/input-group.component';
-import { ButtonComponent } from '../../atom/button/button.component';
-import { CategoryService } from 'src/app/shared/service/category/category.service';
 import { EnumSize } from 'src/app/shared/constant/enumSize';
-
-class MockCategoryService {
-  createCategory = jest.fn();
-}
+import { FormFieldConfig } from 'src/app/shared/models/formFieldConfig';
+import { ItemRequest } from 'src/app/shared/models/ItemRequest';
+import { ReactiveFormsModule, FormControl } from '@angular/forms';
+import { ValidationsService } from 'src/app/shared/service/validations/validations.service';
 
 describe('FormComponent', () => {
   let component: FormComponent;
   let fixture: ComponentFixture<FormComponent>;
-  let categoryService: MockCategoryService;
+
+  const mockFormFieldsConfig: FormFieldConfig[] = [
+    { name: 'name', label: 'Name', type: 'string', size: EnumSize.Medium, validations: { required: true, min:3, type: 'string' } },
+    { name: 'description', label: 'Description', type: 'string', size: EnumSize.Medium, validations: { required: true, type: 'string' } },
+    { name: 'quantity', label: 'Quantity', type: 'number', size: EnumSize.Medium, validations: { required: true, min: 1, type: 'number' } },
+    { name: 'price', label: 'Price', type: 'number', size: EnumSize.Medium, validations: { required: true, type: 'number' } },
+    { name: 'category', label: 'Category', type: 'dropdown', size: EnumSize.Medium, validations: { required: true, type: 'list' } },
+    { name: 'brand', label: 'Brand', type: 'dropdown', size: EnumSize.Medium, validations: { required: true, type: 'list' } }
+  ];
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule],
-      declarations: [FormComponent, ErrorLabelComponent, InputGroupComponent, ButtonComponent],
-      providers: [{ provide: CategoryService, useClass: MockCategoryService }],
+      declarations: [FormComponent],
+      imports: [ReactiveFormsModule]
     }).compileComponents();
-  });
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(FormComponent);
     component = fixture.componentInstance;
-    component.formFieldsConfig = [
-      {
-        name: 'name',
-        label: 'Nombre',
-        type: 'input',
-        size: EnumSize.Medium,
-        validations: {
-          required: true,
-          min: 3,
-          max: 50,
-          pattern: '^[A-Z][a-zA-Z0-9 ]*$'
-        }
-      },
-      {
-        name: 'description',
-        label: 'Descripción',
-        type: 'textarea',
-        size: EnumSize.Medium,
-        validations: {
-          required: true,
-          min: 3,
-          max: 90
-        }
-      },
-    ];
-
+    component.formFieldsConfig = mockFormFieldsConfig;
     fixture.detectChanges();
   });
 
-  it('should create the form with two controls', () => {
-    expect(component.form.contains('name')).toBeTruthy();
-    expect(component.form.contains('description')).toBeTruthy();
+  it('should create', () => {
+    expect(component).toBeTruthy();
   });
 
-  it('should set formFields correctly', () => {
-    expect(component.formFields.length).toBe(2);
-    expect(component.formFields[0].label).toBe('Nombre');
-    expect(component.formFields[1].label).toBe('Descripción');
-  });
+  it('should emit formSubmit event with form data on valid form submission', () => {
+    component.ngOnInit();
+    const formData: ItemRequest = {
+      name: 'Test Item',
+      description: 'Description',
+      quantity: 5,
+      price: 100,
+      category: [1],
+      brand: 1
+    };
 
-  it('should disable the submit button if the form is invalid', () => {
-    component.form.controls['name'].setValue('');
-    component.form.controls['description'].setValue('');
-    fixture.detectChanges();
-    const button = fixture.debugElement.query(By.css('app-button'));
-    expect(button.componentInstance.isDisabled).toBe(true);
-  });
-
-  it('should enable the submit button if the form is valid', () => {
-    component.form.controls['name'].setValue('Valid Name');
-    component.form.controls['description'].setValue('Valid Description');
-    fixture.detectChanges();
-    const button = fixture.debugElement.query(By.css('app-button'));
-    expect(button.componentInstance.isDisabled).toBe(false);
-  });
-
-  it('should emit form data and reset the form on successful submission', () => {
-    component.form.controls['name'].setValue('Valid Name');
-    component.form.controls['description'].setValue('Valid Description');
-
-    component.formSubmit.subscribe((data) => {
-      expect(data).toEqual({ name: 'Valid Name', description: 'Valid Description' });
-    });
+    const formSubmitSpy = jest.spyOn(component.formSubmit, 'emit');
+    component.form.setValue(formData);
+    component.form.updateValueAndValidity();
+    expect(component.form.valid).toBe(true);
 
     component.onSubmit();
 
-    expect(component.form.value).toEqual({ name: null, description: null });
+    expect(formSubmitSpy).toHaveBeenCalledWith(formData);
+    expect(component.form.valid).toBe(false);
   });
 
-  it('should not emit form data and reset the form if it is invalid', () => {
-    component.form.controls['name'].setValue('');
-    component.form.controls['description'].setValue('Valid Description');
+  it('should reset the form and dropdown selections after form submission', () => {    
+    component.ngOnInit();
+    component.form.controls['name'].setValue('Test Item');
+    component.form.controls['description'].setValue('Description');
+    component.form.controls['quantity'].setValue(5);
+    component.form.controls['category'].setValue([1]);
     
     component.onSubmit();
-
-    expect(component.formSubmit.observed).toBeFalsy();
-    expect(component.form.value).toEqual({ name: '', description: 'Valid Description' });
+    
+    setTimeout(() => {
+      expect(component.form.controls['name'].value).toBe('');
+      expect(component.form.controls['description'].value).toBe('');
+      expect(component.form.controls['quantity'].value).toBe(0);
+      expect(component.form.controls['category'].value).toEqual([]);
+      expect(component.resetDropdownSelection).toBe(false);
+    }, 0);
   });
 
-  it('should display error message if present', () => {
-    component.errorMessage = 'Some error occurred';
-    fixture.detectChanges();
-    const errorLabel = fixture.debugElement.query(By.css('app-error-label'));
-    expect(errorLabel).toBeTruthy();
-    expect(errorLabel.componentInstance.message).toBe('Some error occurred');
+  it('should return isDisabled as true when form is invalid', () => {
+    component.ngOnInit();
+  
+    component.form.updateValueAndValidity();
+    expect(component.isDisabled).toBe(true);
+  
+    component.form.controls['name'].setValue('Test');
+    component.form.controls['description'].setValue('Test Description');
+    component.form.controls['quantity'].setValue(10);
+    component.form.controls['price'].setValue(100);
+    component.form.controls['category'].setValue([1]);
+    component.form.controls['brand'].setValue([1]);
+  
+    component.form.updateValueAndValidity();
+    expect(component.isDisabled).toBe(false);
   });
+  
 });

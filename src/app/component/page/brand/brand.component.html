@@ -7,11 +7,12 @@
         [formName]="formName"
         [button]="button"
         [formFieldsConfig]="formFieldsConfig"
-        [errorMessage] = "errorMessage"
+        [errorMessage]="errorMessage"
         (formSubmit)="onFormSubmit($event)"
     ></app-form>
 
     <app-full-table 
+        class="brand-table"
         [labels]="labels" 
         [data]="brands" 
         [pagination]="pagination" 
