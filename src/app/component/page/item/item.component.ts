@@ -122,7 +122,6 @@ export class ItemComponent {
 
   loadData(page: number, size: number, order: string = this.pagination.order, orderField: string = this.currentSortField): void {
     if (orderField === 'name') {
-      // Llama al endpoint sin campo específico de ordenación
       this.itemService.getItem(page - PageConstants.FIRST, size, order).subscribe({
         next: (paginationData) => {
           this.items = this.transformToDisplayItems(paginationData.content);
@@ -133,7 +132,6 @@ export class ItemComponent {
         }
       });
     } else {
-      // Llama al endpoint con campo específico de ordenación (category o brand)
       this.itemService.getItemByField(page - PageConstants.FIRST, size, order, orderField).subscribe({
         next: (paginationData) => {
           this.items = this.transformToDisplayItems(paginationData.content);
@@ -148,14 +146,19 @@ export class ItemComponent {
 
   onSortChange(sortData: { field: string, order: string }): void {
     const { field, order } = sortData;
-
-    this.currentSortField = field;
+    
+    this.currentSortField = this.getFieldNameFromLabel(field) ?? 'name';
     this.isDescendingOrder = order === 'desc';
 
     this.pagination.order = order;
     this.pagination.page = PageConstants.FIRST;
 
     this.loadData(this.pagination.page, this.pagination.size, this.pagination.order, this.currentSortField);
+  }
+
+  private getFieldNameFromLabel(label: string): string | undefined {
+    const fieldConfig = this.formFieldsConfig.find(config => config.label.toUpperCase() === label);
+    return fieldConfig?.name;
   }
 
   onPageChange(newPage: number): void {

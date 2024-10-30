@@ -43,9 +43,8 @@ export class ItemService {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString())
-      .set('order', order)
-      .set('field', field);
-    return this.http.get<ItemResponse>(`${this.apiUrl}/ordered`, { headers, params });
+      .set('order', order);
+    return this.http.get<ItemResponse>(`${this.apiUrl}/${field}`, { headers, params });
   }
   
 
