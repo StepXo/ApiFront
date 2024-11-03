@@ -9,7 +9,6 @@ describe('BrandService', () => {
   let service: BrandService;
   let httpMock: HttpTestingController;
   const apiUrl = `${environment.apiStock}/brand`;
-  const token = `Bearer ${environment.token}`;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

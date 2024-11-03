@@ -40,6 +40,7 @@
     }
 
     &:focus-within{
+        
         border-color:var(--purple);
         outline-color: var(--purple);
     }
@@ -49,10 +50,6 @@
         border-color: var(--spacer-light);
         cursor: not-allowed;
     } 
-
-    &::-webkit-scrollbar {
-        height: 0px; 
-    }
 
     &.error{
         border-color: var(--error);

@@ -1,4 +1,29 @@
 <header>
+
     <app-logo alt="Logo" [size]="size"></app-logo>
     <app-menu-burger [menuItems]="menuItems"></app-menu-burger>
+
+    <div class="auth-buttons">
+        <app-button 
+            *ngIf="!isLoggedIn" 
+            [label]="'Iniciar sesión'" 
+            [size]="button" 
+            [route]="'/login'">
+        </app-button>
+        
+        <app-button 
+            *ngIf="!isLoggedIn" 
+            [label]="'Registrarse'" 
+            [size]="button" 
+            [route]="'/register'">
+        </app-button>
+
+        <app-button 
+            *ngIf="isLoggedIn" 
+            [label]="'Cerrar sesión'" 
+            [size]="button" 
+            (click)="logout()"
+            >
+        </app-button>
+    </div>
 </header>

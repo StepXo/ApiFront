@@ -6,4 +6,7 @@ export interface ValidationConfig {
     pattern?: string;
     email?: boolean;
     isInteger?: boolean;
+    maxDate?: string;
+    minDate?:string;
+    ageDate?:string;
 }

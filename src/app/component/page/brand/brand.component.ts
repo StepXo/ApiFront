@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { EnumSize } from 'src/app/shared/constant/enumSize';
 import { PageConstants } from 'src/app/shared/constant/stringConstants/pageConstants';
 import { Brand } from 'src/app/shared/models/brand';
-import { Category } from 'src/app/shared/models/category';
-import { ItemRequest } from 'src/app/shared/models/ItemRequest';
 import { BrandService } from 'src/app/shared/service/brand/brand.service';
 import { ValidationsService } from 'src/app/shared/service/validations/validations.service';
+import { AuthService } from 'src/app/shared/service/auth/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-brand',
@@ -15,7 +15,7 @@ import { ValidationsService } from 'src/app/shared/service/validations/validatio
 export class BrandComponent implements OnInit {
   formName = PageConstants.FORM_NAME_M;
   button = {
-    label:PageConstants.BUTTON_LABEL,
+    label: PageConstants.BUTTON_LABEL,
     size: EnumSize.Medium
   };
   errorMessage: string | null = null;
@@ -27,7 +27,7 @@ export class BrandComponent implements OnInit {
       type: PageConstants.INPUT,
       size: EnumSize.Medium,
       validations: {
-        type:'string',
+        type: 'string',
         required: true,
         min: PageConstants.MIN_LENGTH, 
         max: PageConstants.MAX_NAME_LENGTH, 
@@ -35,12 +35,12 @@ export class BrandComponent implements OnInit {
       }
     },
     {
-      name:PageConstants.DESCRIPTION,
+      name: PageConstants.DESCRIPTION,
       label: PageConstants.LABEL_DESCRIPTION,
       type: PageConstants.TEXT_AREA,
       size: EnumSize.Medium,
       validations: {
-        type:'string',
+        type: 'string',
         required: true,
         min: PageConstants.MIN_LENGTH, 
         max: PageConstants.MAX_DESCRIPTION_LENGTH_2
@@ -61,15 +61,32 @@ export class BrandComponent implements OnInit {
     size: PageConstants.PAGE_SIZE,
     totalPages: PageConstants.FIRST,
     order: PageConstants.ORDER
+  };
+
+  isLogged!: string | null;
+  isAdmin!: boolean;
+
+  constructor(
+    private readonly brandService: BrandService,
+    private readonly authService: AuthService,
+    private readonly router: Router
+  ) {}
+
+  private checkAdminRole(): void {
+    this.isLogged = this.authService.getRole();
+    this.isAdmin = this.isLogged === 'ROLE_ADMIN';
+
+    if (!this.isLogged) {
+      this.router.navigate(['/auth-required']);
+    }
   }
 
-  constructor(private readonly brandService: BrandService) {}
-
   ngOnInit(): void {
+    this.checkAdminRole();
     this.loadData(this.pagination.page, this.pagination.size, this.pagination.order);
   }
 
-  loadData(page: number, size: number,order: string = this.pagination.order): void {
+  loadData(page: number, size: number, order: string = this.pagination.order): void {
     this.brandService.getBrands(page - PageConstants.FIRST, size, order).subscribe({
       next: (paginationData) => {
         this.brands = paginationData.content;
@@ -91,17 +108,32 @@ export class BrandComponent implements OnInit {
     this.pagination.page = newPage;
     this.loadData(this.pagination.page, this.pagination.size);
   }
-  
 
-  onFormSubmit(data: Category | Brand | ItemRequest) {
-    this.brandService.createBrand(data).subscribe({
-        next: () => {
-          this.loadData(this.pagination.page, this.pagination.size, this.pagination.order);
-        },
-        error: (error) => {
-          this.errorMessage = ValidationsService.validateCategory(error);
-        }
+  onFormSubmit(data: unknown): void {
+    if (!this.isBrandData(data)) {
+      return;
+    }
+
+    const brand = this.createBrand(data);
+    this.brandService.createBrand(brand).subscribe({
+      next: () => this.loadData(this.pagination.page, this.pagination.size, this.pagination.order),
+      error: (error) => {
+        this.errorMessage = ValidationsService.validateCategory(error);
+      }
     });
   }
 
+  private isBrandData(data: unknown): data is Brand {
+    return typeof data === 'object' && data !== null && 
+      'name' in data && 
+      'description' in data;
+  }
+
+  private createBrand(data: Brand): Brand {
+    return {
+      id: data.id,
+      name: data.name,
+      description: data.description
+    };
+  }
 }

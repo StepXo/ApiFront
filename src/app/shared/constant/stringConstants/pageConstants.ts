@@ -29,9 +29,9 @@ export class PageConstants {
     static readonly CATEGORY_LABEL: string = 'Categorias';
     static readonly BRAND_LABEL: string = 'Marcas';
     static readonly ITEM_LABEL: string = 'Articulos';
-    static readonly CLIENT_LABEL: string = 'Clientes';
+    static readonly CLIENT_LABEL: string = 'Crear Usuarios';
     static readonly CATEGORY_ROUTE: string = '/category';
     static readonly BRAND_ROUTE: string = '/brand';
     static readonly ITEM_ROUTE: string = '/item';
-    static readonly CLIENT_ROUTE: string = '';
+    static readonly CLIENT_ROUTE: string = '/register';
 }

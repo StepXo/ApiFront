@@ -12,4 +12,7 @@ export const errorMessages: { [key: string]: string | ((error: any) => string) }
   category: 'Ya existe una categoría con ese nombre.',
   brand: 'Ya existe una marca con ese nombre.',
   genericError: 'Error desconocido, por favor inténtalo de nuevo.',
+  minDate: (error) => `La fecha debe ser posterior o igual a ${error.requiredDate}`,
+  maxDate: (error) => `La fecha debe ser anterior o igual a ${error.requiredDate}`,
+  ageDate: (error) => `Debes tener al menos 18 años para registrarte.`,
 };

@@ -7,3 +7,9 @@ header {
   box-sizing: border-box; 
   margin-left: auto;
 }
+
+.auth-buttons {
+  margin-left: auto; 
+  display: flex;
+  gap: 8px;
+}

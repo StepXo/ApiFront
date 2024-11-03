@@ -12,6 +12,7 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    margin: 8px;
 }
 
 .item-table{
@@ -19,6 +20,7 @@
     align-items: center;
     flex-direction: column;
     overflow-x: scroll;
+    margin: 8px;
 }
 
 @media (max-width: 752px) {

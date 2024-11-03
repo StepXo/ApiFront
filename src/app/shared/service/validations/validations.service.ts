@@ -43,12 +43,16 @@ export class ValidationsService {
   
     if (validations.type === 'string') {
       validators.push(...this.getStringValidators(validations));
-    } else if (validations.type === 'number') {
+    }
+    if (validations.type === 'number') {
       validators.push(...this.getNumberValidators(validations));
-    } else if (validations.type === 'list') {
+    }
+    if (validations.type === 'list') {
       validators.push(...this.getListValidators(validations));
     }
-  
+    if (validations.type === 'date') {
+      validators.push(...this.getDateValidators(validations));
+    }
     if (validations.pattern) {
       validators.push(Validators.pattern(validations.pattern));
     }
@@ -93,13 +97,44 @@ export class ValidationsService {
     const listValidators: ValidatorFn[] = [];
     if (validations.max !== undefined) {
       listValidators.push((control: AbstractControl) =>
-        Array.isArray(control.value) && control.value.length <= validations.max!
-          ? null 
-          : { maxLengthExceeded: { requiredLength: validations.max, actualLength: control.value?.length || 0 } }
+        Array.isArray(control.value) && control.value.length <= validations.max!? null : { 
+          maxLengthExceeded: { requiredLength: validations.max, actualLength: control.value?.length || 0 } 
+        }
       );
     }
     return listValidators;
   }
+
+  private static getDateValidators(validations: ValidationConfig): ValidatorFn[] {
+    const dateValidators: ValidatorFn[] = [];
+
+    if (validations.minDate) {
+      dateValidators.push((control: AbstractControl) => {
+        const inputDate = new Date(control.value);
+        const minDate = new Date(validations.minDate!);
+        return inputDate >= minDate ? null : { minDate: { requiredDate: validations.minDate, actualDate: control.value } };
+      });
+    }
+
+    if (validations.maxDate) {
+      dateValidators.push((control: AbstractControl) => {
+        const inputDate = new Date(control.value);
+        const maxDate = new Date(validations.maxDate!);
+        return inputDate <= maxDate ? null : { maxDate: { requiredDate: validations.maxDate, actualDate: control.value } };
+      });
+    }
+
+    if (validations.ageDate) {
+      dateValidators.push((control: AbstractControl) => {
+        const inputDate = new Date(control.value);
+        const minAgeDate = new Date(validations.ageDate!);
+        return inputDate <= minAgeDate ? null : { ageDate: { requiredDate: validations.ageDate, actualDate: control.value } };
+      });
+    }
+
+    return dateValidators;
+}
+
 
   static validateCategory(error: any): string | null {
     if (error.status === ErrorStatus.Forbidden) {

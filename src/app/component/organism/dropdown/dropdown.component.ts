@@ -1,11 +1,9 @@
-import { Component, ElementRef, HostListener, Input, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { EnumSize } from 'src/app/shared/constant/enumSize';
-import { Brand } from 'src/app/shared/models/brand';
-import { Category } from 'src/app/shared/models/category';
+import { DropdownDataService } from 'src/app/shared/models/dropdownDataService';
+import { DropdownItem } from 'src/app/shared/models/dropdownItem';
 import { FormField } from 'src/app/shared/models/formField';
-import { BrandService } from 'src/app/shared/service/brand/brand.service';
-import { CategoryService } from 'src/app/shared/service/category/category.service';
 import { ValidationsService } from 'src/app/shared/service/validations/validations.service';
 
 @Component({
@@ -14,24 +12,21 @@ import { ValidationsService } from 'src/app/shared/service/validations/validatio
   styleUrls: ['./dropdown.component.scss']
 })
 export class DropdownComponent implements OnInit {
-
   @Input() formField!: FormField;
   @ViewChild('dropdownContainer') dropdownContainer!: ElementRef;
   @Input() resetSelection: boolean = false;
+  @Output() serviceCall = new EventEmitter<string>();
 
   size = EnumSize.Small;
   isOpen = false;
-  selectedItems: (Brand | Category)[] = [];
-  filteredItems: (Brand | Category)[] = [];
-  data: (Brand | Category)[] = [];
-
-  constructor(
-    private readonly categoryService: CategoryService,
-    private readonly brandService: BrandService
-  ) { }
+  selectedItems: DropdownItem[] = [];
+  filteredItems: DropdownItem[] = [];
+  data: DropdownItem[] = [];
 
   ngOnInit(): void {
-    this.loadData(this.formField.label);
+    if (this.formField.dataService) {
+      this.loadData();
+    }
     const control = this.formField.control;
 
     control.valueChanges.subscribe(() => {
@@ -56,31 +51,17 @@ export class DropdownComponent implements OnInit {
     return ValidationsService.validateInput(control);
   }
 
-  loadData(name: string): void {
-    if (name === 'Categoria') {
-      this.categoryService.getCategoryList().subscribe({
-        next: (data) => {
-          this.data = data;
-          this.filteredItems = [...this.data];
-        },
-        error: (error) => {
-          console.error('Error loading categories:', error);
-        }
-      });
-    }
-    if (name === 'Marca') {
-      this.brandService.getBrandList().subscribe({
-        next: (data) => {
-          this.data = data;
-          this.filteredItems = [...this.data];
-        },
-        error: (error) => {
-          console.error('Error loading brands:', error);
-        }
-      });
-    }
+  private loadData(): void {
+    this.formField.dataService?.getData().subscribe({
+      next: (data) => {
+        this.data = data;
+        this.filteredItems = data;
+      },
+      error: (error) => {
+        console.error('Error loading data:', error);
+      }
+    });
   }
-  
 
   toggleDropdown() {
     if (!this.isInputDisabled()) {
@@ -94,7 +75,7 @@ export class DropdownComponent implements OnInit {
     }
   }
 
-  selectItem(item: Brand | Category) {
+  selectItem(item: DropdownItem) {
     const index = this.selectedItems.findIndex(selected => selected.id === item.id);
     if (index >= 0) {
       this.selectedItems.splice(index, 1);
@@ -106,11 +87,11 @@ export class DropdownComponent implements OnInit {
     this.formField.control.markAsDirty();
   }
 
-  isSelected(item: Brand | Category): boolean {
+  isSelected(item: DropdownItem): boolean {
     return this.selectedItems.some(selected => selected.id === item.id);
   }
 
-  removeItem(item: Brand | Category) {
+  removeItem(item: DropdownItem) {
     const index = this.selectedItems.findIndex(selected => selected.id === item.id);
     if (index >= 0) {
       this.selectedItems.splice(index, 1);
@@ -119,7 +100,7 @@ export class DropdownComponent implements OnInit {
     this.formField.control.setValue(selectedIds);
   }
 
-  private debounceTimer: any;
+  private debounceTimer!: ReturnType<typeof setTimeout>;
 
   onInputChange(event: Event) {
     clearTimeout(this.debounceTimer);

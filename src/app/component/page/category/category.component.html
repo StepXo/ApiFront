@@ -1,15 +1,15 @@
 <app-header></app-header>
 
 <div class="app-container">
-    
     <app-form 
+        *ngIf="isAdmin"
         class="brand-form"
         [formName]="formName"
         [button]="button"
         [formFieldsConfig]="formFieldsConfig"
         [errorMessage]="errorMessage"
-        (formSubmit)="onFormSubmit($event)"
-    ></app-form>
+        (formSubmit)="onFormSubmit($event)">
+    </app-form>
 
     <app-full-table 
         class="brand-table"

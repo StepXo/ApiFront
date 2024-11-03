@@ -3,8 +3,7 @@ import { FormComponent } from './form.component';
 import { EnumSize } from 'src/app/shared/constant/enumSize';
 import { FormFieldConfig } from 'src/app/shared/models/formFieldConfig';
 import { ItemRequest } from 'src/app/shared/models/ItemRequest';
-import { ReactiveFormsModule, FormControl } from '@angular/forms';
-import { ValidationsService } from 'src/app/shared/service/validations/validations.service';
+import { ReactiveFormsModule } from '@angular/forms';
 
 describe('FormComponent', () => {
   let component: FormComponent;
