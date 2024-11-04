@@ -43,12 +43,16 @@ export class ValidationsService {
   
     if (validations.type === 'string') {
       validators.push(...this.getStringValidators(validations));
-    } else if (validations.type === 'number') {
+    }
+    if (validations.type === 'number') {
       validators.push(...this.getNumberValidators(validations));
-    } else if (validations.type === 'list') {
+    }
+    if (validations.type === 'list') {
       validators.push(...this.getListValidators(validations));
     }
-  
+    if (validations.type === 'date') {
+      validators.push(...this.getDateValidators(validations));
+    }
     if (validations.pattern) {
       validators.push(Validators.pattern(validations.pattern));
     }
@@ -93,13 +97,44 @@ export class ValidationsService {
     const listValidators: ValidatorFn[] = [];
     if (validations.max !== undefined) {
       listValidators.push((control: AbstractControl) =>
-        Array.isArray(control.value) && control.value.length <= validations.max!
-          ? null 
-          : { maxLengthExceeded: { requiredLength: validations.max, actualLength: control.value?.length || 0 } }
+        Array.isArray(control.value) && control.value.length <= validations.max!? null : { 
+          maxLengthExceeded: { requiredLength: validations.max, actualLength: control.value?.length || 0 } 
+        }
       );
     }
     return listValidators;
   }
+
+  private static getDateValidators(validations: ValidationConfig): ValidatorFn[] {
+    const dateValidators: ValidatorFn[] = [];
+
+    if (validations.minDate) {
+      dateValidators.push((control: AbstractControl) => {
+        const inputDate = new Date(control.value);
+        const minDate = new Date(validations.minDate!);
+        return inputDate >= minDate ? null : { minDate: { requiredDate: validations.minDate, actualDate: control.value } };
+      });
+    }
+
+    if (validations.maxDate) {
+      dateValidators.push((control: AbstractControl) => {
+        const inputDate = new Date(control.value);
+        const maxDate = new Date(validations.maxDate!);
+        return inputDate <= maxDate ? null : { maxDate: { requiredDate: validations.maxDate, actualDate: control.value } };
+      });
+    }
+
+    if (validations.ageDate) {
+      dateValidators.push((control: AbstractControl) => {
+        const inputDate = new Date(control.value);
+        const minAgeDate = new Date(validations.ageDate!);
+        return inputDate <= minAgeDate ? null : { ageDate: { requiredDate: validations.ageDate, actualDate: control.value } };
+      });
+    }
+
+    return dateValidators;
+}
+
 
   static validateCategory(error: any): string | null {
     if (error.status === ErrorStatus.Forbidden) {
@@ -130,4 +165,51 @@ export class ValidationsService {
     const message = errorMessages['genericError'];
     return typeof message === 'function' ? message(error) : message;
   }
+
+  static validateItem(error: any): string | null {
+    if (error.status === ErrorStatus.Forbidden) {
+      const message = errorMessages['token'];
+      return typeof message === 'function' ? message(error) : message;
+    }
+
+    if (error.status === ErrorStatus.Conflict) {
+      const message = errorMessages['item'];
+      return typeof message === 'function' ? message(error) : message;
+    } 
+    
+    const message = errorMessages['genericError'];
+    return typeof message === 'function' ? message(error) : message;
+  }
+
+  static validateUser(error: any): string | null {
+    if (error.status === ErrorStatus.Conflict) {
+      const message = errorMessages['emailConflict'];
+      return typeof message === 'function' ? message(error) : message;
+    }
+    if (error.status === ErrorStatus.BadRequest) {
+      const message = errorMessages['invalidIdDocument'];
+      return typeof message === 'function' ? message(error) : message;
+    }
+    const message = errorMessages['genericError'];
+    return typeof message === 'function' ? message(error) : message;
+  }
+
+  static validateRole(error: any): string | null {
+    if (error.status === ErrorStatus.NotFound) {  
+      const message = errorMessages['userNotFound'];
+      return typeof message === 'function' ? message(error) : message;
+    }
+    const message = errorMessages['genericError'];
+    return typeof message === 'function' ? message(error) : message;
+  }
+
+  static validateLogin(error: any): string | null {
+    if (error.status === ErrorStatus.Unauthorized) {
+      const message = errorMessages['badCredentials'];
+      return typeof message === 'function' ? message(error) : message;
+    }
+    const message = errorMessages['genericError'];
+    return typeof message === 'function' ? message(error) : message;
+  }
+
 }

@@ -9,8 +9,10 @@ import { AtomConstants } from 'src/app/shared/constant/stringConstants/atomConst
   styleUrls: ['./input.component.scss']
 })
 export class InputComponent {
+
   @Input() control: FormControl = new FormControl();
   @Input() label: string = AtomConstants.EMPTY;
+  @Input() type: string = 'text'
   @Input() isDisabled: boolean = false;
   @Input() size: EnumSize = EnumSize.Medium;
 }

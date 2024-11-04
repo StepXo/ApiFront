@@ -1,35 +1,75 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable, map } from 'rxjs';
+import { User } from '../../models/user';
 import { environment } from 'src/environments/environment';
+import { Login } from '../../models/login';
 
-@Injectable()
-export class AuthService  {
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthService {
   
-  /*constructor(private authService: AuthService) {}
+  private readonly apiUrl = `${environment.apiUser}`;
+  private readonly tokenKey = 'authToken';
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const token = this.authService.getToken();
-    
+  constructor(private readonly http: HttpClient) {}
+
+  login(login: Login): Observable<string> {
+    return this.http.post<{ token: string }>(`${this.apiUrl}/auth/login`, login).pipe(
+      map(response => {
+        this.setToken(response.token);
+        return response.token;
+      })
+    );
+  }
+
+  register(user: User): Observable<string> {
+    return this.http.post<{ token: string }>(`${this.apiUrl}/auth/register`, user).pipe(
+      map(response => {
+        this.setToken(response.token);
+        return response.token;
+      })
+    );
+  }
+
+  registerAdmin(user: User): Observable<string> {
+    return this.http.post<string>(`${this.apiUrl}/admin`, user);
+  }
+
+  setRole(data: { id: number; role: string }): Observable<string> {
+    return this.http.post<string>(`${this.apiUrl}/admin/role`, data);
+  }
+
+
+  setToken(token: string): void {
+    localStorage.setItem(this.tokenKey, token);
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem(this.tokenKey);
+  }
+
+  logout(): void {
+    localStorage.removeItem(this.tokenKey);
+  }
+
+  private decodeToken(token: string): any {
+    try {
+      const payload = token.split('.')[1];
+      return JSON.parse(atob(payload));
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return null;
+    }
+  }
+
+  getRole(): string | null {
+    const token = this.getToken();
     if (token) {
-      const clonedRequest = req.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      
-      return next.handle(clonedRequest);
+      const decoded = this.decodeToken(token);
+      return decoded?.role || null;
     }
-    
-    return next.handle(req);
-  }*/
-    private readonly apiUrl = `${environment.apiUser}/login`;  
-
-    constructor(private readonly http: HttpClient) { }
-  
-    actualizeAuth(): Observable<string> {
-      const userData = { email: "johndos@example.com", password: "12345" };
-      return this.http.post<string>(this.apiUrl, userData);
-    }
-    
+    return null;
+  }
 }

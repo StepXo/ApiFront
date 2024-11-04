@@ -1,19 +1,32 @@
 <div class="form-item" *ngFor="let field of fields">
-    <ng-container *ngIf="field.type === 'textarea'; else inputTemplate">
-        <app-textarea 
-            [control]="field.control" 
-            [label]="field.label" 
+    <ng-container [ngSwitch]="field.type">
+        <app-textarea
+            *ngSwitchCase="'textarea'"
+            [control]="field.control"
+            [label]="field.label"
+            [size]="field.size">
+        </app-textarea>
+        
+        <app-input-date
+            *ngSwitchCase="'date'"
+            [control]="field.control"
+            [label]="field.label"
             [size]="field.size"
-        ></app-textarea>
+            [minDate]="field.minDate"
+            [maxDate]="field.maxDate">
+        </app-input-date>
+        
+        <app-input
+            *ngSwitchDefault
+            [type]="field.type"
+            [control]="field.control"
+            [label]="field.label"
+            [size]="field.size">
+        </app-input>
     </ng-container>
-    <ng-template #inputTemplate>
-        <app-input 
-            [control]="field.control" 
-            [label]="field.label" 
-            [size]="field.size"
-        ></app-input>
-    </ng-template>
-    <app-error-label *ngIf="field.control.invalid && (field.control.touched ||field.control.dirty)" 
-        [message]="field.message"
-    ></app-error-label>
+
+    <app-error-label 
+        *ngIf="field.control.invalid && (field.control.touched || field.control.dirty)" 
+        [message]="field.message">
+    </app-error-label>
 </div>

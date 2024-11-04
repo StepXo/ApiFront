@@ -10,6 +10,7 @@ import { PaginationButtonComponent } from './pagination-button/pagination-button
 import { RouterModule } from '@angular/router';
 import { TextareaComponent } from './textarea/textarea.component';
 import { SelectComponent } from './select/select.component';
+import { InputDateComponent } from './input-date/input-date.component';
 
 
 
@@ -23,6 +24,7 @@ import { SelectComponent } from './select/select.component';
     PaginationButtonComponent,
     TextareaComponent,
     SelectComponent,
+    InputDateComponent,
   ],
   imports: [
     CommonModule,
@@ -38,6 +40,7 @@ import { SelectComponent } from './select/select.component';
     PaginationButtonComponent,
     TextareaComponent,
     SelectComponent,
+    InputDateComponent,
   ]
 })
 export class AtomModule { }

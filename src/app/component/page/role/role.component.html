@@ -1,0 +1,21 @@
+<div class="spacing"></div>
+
+<div class="app-container">
+    <app-button 
+        class="left"
+        [label]="backButtonConfig.label" 
+        [route]="backButtonConfig.route" 
+        [size]="backButtonConfig.size"
+        [isDisabled]="backButtonConfig.isDisabled ?? false">
+    </app-button>
+
+    <app-form 
+        [formName]="formName"
+        [button]="button"
+        [formFieldsConfig]="formFieldsConfig"
+        [errorMessage]="errorMessage"
+        (formSubmit)="onFormSubmit($event)">
+    </app-form>
+</div>
+
+<app-footer></app-footer>

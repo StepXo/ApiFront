@@ -1,0 +1,77 @@
+.floating-label {
+    position: top;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-size: 0.9em;
+}
+
+.custom-date {
+    border: 2px solid var(--spacer-light);
+    opacity: 1;
+    border-radius: 2px;
+    gap: 10px;
+    font-family: 'Poppins';
+    font-weight: 400;
+    width: 100%;
+    box-sizing: border-box;
+    resize: none;
+    color: var(--border);
+
+    input {
+        border: none;
+        outline: none;
+        background: transparent;
+        font-size: 14px;
+        width: 100%;
+
+        &::placeholder {
+            color: var(--border);
+        }
+
+        &:not(:placeholder-shown)::placeholder {
+            color: var(--black); 
+        }
+    }
+
+    @each $size, $values in (
+        medium: (
+            padding: 12px,
+            input-height: 20px
+        ),
+        small: (
+            padding: 8px 12px,
+            input-height: 20px
+        )
+    ) {
+        &.#{$size} {
+            height: map-get($values, height);
+            padding: map-get($values, padding);
+
+            input {
+                height: map-get($values, input-height);
+            }
+        }
+    }
+
+    input:placeholder-shown {
+        color: var(--border);
+    }
+
+    &:focus-within {
+        color: black;
+        border-color: var(--purple);
+        outline-color: var(--purple);
+    }
+
+    &:disabled {
+        background-color: var(--disabled);
+        border-color: var(--spacer-light);
+        cursor: not-allowed;
+    } 
+
+    &.error {
+        border-color: var(--error);
+    }
+}

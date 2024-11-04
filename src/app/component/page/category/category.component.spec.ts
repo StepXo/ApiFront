@@ -1,21 +1,26 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { CategoryComponent } from './category.component'; 
-import { CategoryService } from 'src/app/shared/service/category/category.service'; 
+import { CategoryComponent } from './category.component';
+import { CategoryService } from 'src/app/shared/service/category/category.service';
+import { AuthService } from 'src/app/shared/service/auth/auth.service';
+import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
-import { Category } from 'src/app/shared/models/category'; 
+import { Category } from 'src/app/shared/models/category';
 import { ValidationsService } from 'src/app/shared/service/validations/validations.service';
+import { PageConstants } from 'src/app/shared/constant/stringConstants/pageConstants';
 
-describe('CategoryComponent', () => { 
-  let component: CategoryComponent; 
-  let fixture: ComponentFixture<CategoryComponent>; 
-  let categoryService: jest.Mocked<CategoryService>; 
+describe('CategoryComponent', () => {
+  let component: CategoryComponent;
+  let fixture: ComponentFixture<CategoryComponent>;
+  let categoryService: jest.Mocked<CategoryService>;
+  let authServiceMock: any;
+  let routerMock: any;
 
-  const mockCategories: Category[] = [ 
-    { id: 1, name: 'Category 1', description: 'Description 1' }, 
-    { id: 2, name: 'Category 2', description: 'Description 2' }, 
+  const mockCategories: Category[] = [
+    { id: 1, name: 'Category 1', description: 'Description 1' },
+    { id: 2, name: 'Category 2', description: 'Description 2' },
   ];
 
-  const mockCategoryResponse = { 
+  const mockCategoryResponse = {
     content: mockCategories,
     totalPages: 1,
     totalElements: 2,
@@ -25,19 +30,31 @@ describe('CategoryComponent', () => {
   };
 
   beforeEach(async () => {
-    const categoryServiceMock = { 
-      getCategories: jest.fn(), 
+    const categoryServiceMock = {
+      getCategories: jest.fn().mockReturnValue(of(mockCategoryResponse)),
       createCategory: jest.fn(),
     };
 
+    authServiceMock = {
+      getRole: jest.fn().mockReturnValue('ROLE_ADMIN'),
+    };
+
+    routerMock = {
+      navigate: jest.fn(),
+    };
+
     await TestBed.configureTestingModule({
-      declarations: [CategoryComponent], 
-      providers: [{ provide: CategoryService, useValue: categoryServiceMock }] 
+      declarations: [CategoryComponent],
+      providers: [
+        { provide: CategoryService, useValue: categoryServiceMock },
+        { provide: AuthService, useValue: authServiceMock },
+        { provide: Router, useValue: routerMock },
+      ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(CategoryComponent); 
-    component = fixture.componentInstance; 
-    categoryService = TestBed.inject(CategoryService) as jest.Mocked<CategoryService>; 
+    fixture = TestBed.createComponent(CategoryComponent);
+    component = fixture.componentInstance;
+    categoryService = TestBed.inject(CategoryService) as jest.Mocked<CategoryService>;
     component.pagination = { page: 1, size: 5, totalPages: 1, order: 'asc' };
   });
 
@@ -46,55 +63,53 @@ describe('CategoryComponent', () => {
   });
 
   it('should load data on init', () => {
-    categoryService.getCategories.mockReturnValue(of(mockCategoryResponse)); 
+    categoryService.getCategories.mockReturnValue(of(mockCategoryResponse));
 
     component.ngOnInit();
 
-    expect(categoryService.getCategories).toHaveBeenCalledWith(0, 5, 'asc'); 
-    expect(component.categories).toEqual(mockCategories); 
+    expect(categoryService.getCategories).toHaveBeenCalledWith(0, 5, 'asc');
+    expect(component.categories).toEqual(mockCategories);
     expect(component.pagination.totalPages).toBe(1);
   });
 
   it('should handle error when loading data', () => {
     console.error = jest.fn();
-    categoryService.getCategories.mockReturnValue(throwError(() => new Error('Error fetching categories'))); 
-  
+    categoryService.getCategories.mockReturnValue(throwError(() => new Error(PageConstants.ERROR_CATEGORIES)));
+
     component.loadData(1, 5, 'asc');
-  
-    expect(console.error).toHaveBeenCalledWith('Error fetching categories', new Error('Error fetching categories')); 
+
+    expect(console.error).toHaveBeenCalledWith(PageConstants.ERROR_CATEGORIES, expect.any(Error));
   });
-  
 
   it('should update pagination and load data on page change', () => {
-    categoryService.getCategories.mockReturnValue(of(mockCategoryResponse)); 
+    categoryService.getCategories.mockReturnValue(of(mockCategoryResponse));
 
     component.onPageChange(2);
 
     expect(component.pagination.page).toBe(2);
-    expect(categoryService.getCategories).toHaveBeenCalledWith(1, 5, 'asc'); 
+    expect(categoryService.getCategories).toHaveBeenCalledWith(1, 5, 'asc');
   });
 
   it('should update order and reload data on sort change', () => {
-    categoryService.getCategories.mockReturnValue(of(mockCategoryResponse)); 
-  
+    categoryService.getCategories.mockReturnValue(of(mockCategoryResponse));
+
     component.onSortChange({ field: 'name', order: 'desc' });
-  
+
     expect(component.pagination.order).toBe('desc');
     expect(component.pagination.page).toBe(1);
-    expect(categoryService.getCategories).toHaveBeenCalledWith(0, 5, 'desc'); 
+    expect(categoryService.getCategories).toHaveBeenCalledWith(0, 5, 'desc');
   });
-  
 
   it('should call createCategory and reload data on successful submission', () => {
-    const formData: Category = { id: 3, name: 'Test Category', description: 'Category description' }; 
+    const formData: Category = { id: 3, name: 'Test Category', description: 'Category description' };
 
-    categoryService.createCategory.mockReturnValue(of(formData)); 
+    categoryService.createCategory.mockReturnValue(of(formData));
     categoryService.getCategories.mockReturnValue(of(mockCategoryResponse));
 
     component.onFormSubmit(formData);
 
     expect(categoryService.createCategory).toHaveBeenCalledWith(formData);
-    expect(categoryService.getCategories).toHaveBeenCalledTimes(1); 
+    expect(categoryService.getCategories).toHaveBeenCalledTimes(1);
     expect(component.categories).toEqual(mockCategories);
   });
 
@@ -109,5 +124,17 @@ describe('CategoryComponent', () => {
 
     expect(categoryService.createCategory).toHaveBeenCalledWith(formData);
     expect(component.errorMessage).toBe('Validation error occurred');
+  });
+
+  it('should check admin role on init', () => {
+    component.ngOnInit();
+    expect(authServiceMock.getRole).toHaveBeenCalled();
+    expect(component.isAdmin).toBe(true);
+  });
+
+  it('should redirect if user is not logged in', () => {
+    authServiceMock.getRole.mockReturnValue(null);
+    component.ngOnInit();
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/auth-required']);
   });
 });

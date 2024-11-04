@@ -1,0 +1,26 @@
+<div class="spacing"></div>
+
+<div class="app-container">
+    <app-button 
+    class="left"
+    label="Volver a inicio" 
+    [route]="'/home'" 
+    [size]="size">
+    </app-button>
+    <app-form 
+        [formName]="formName"
+        [button]="button"
+        [formFieldsConfig]="formFieldsConfig"
+        [errorMessage] = "errorMessage"
+        (formSubmit)="onFormSubmit($event)"
+    ></app-form>
+
+    <app-button 
+        class="right"
+        label="Crea una cuenta" 
+        [route]="'/register'" 
+        [size]="size">
+    </app-button>
+</div>
+
+<app-footer></app-footer>

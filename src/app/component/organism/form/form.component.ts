@@ -2,11 +2,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormBuilder, FormGroup, ValidatorFn } from '@angular/forms';
 import { EnumSize } from 'src/app/shared/constant/enumSize';
 import { OrganismConstants } from 'src/app/shared/constant/stringConstants/organismConstants';
-import { Brand } from 'src/app/shared/models/brand';
-import { Category } from 'src/app/shared/models/category';
 import { FormField } from 'src/app/shared/models/formField';
 import { FormFieldConfig } from 'src/app/shared/models/formFieldConfig';
-import { ItemRequest } from 'src/app/shared/models/ItemRequest';
 import { ValidationsService } from 'src/app/shared/service/validations/validations.service';
 
 @Component({
@@ -20,7 +17,7 @@ export class FormComponent implements OnInit {
   @Input() formName: string = OrganismConstants.EMPTY;
   @Input() button: { label: string, size: EnumSize } = { label: OrganismConstants.EMPTY, size: EnumSize.Medium };
 
-  @Output() formSubmit = new EventEmitter<Category | Brand | ItemRequest>();
+  @Output() formSubmit = new EventEmitter<unknown>();
 
   resetDropdownSelection: boolean = false; 
   form: FormGroup;
@@ -44,7 +41,7 @@ export class FormComponent implements OnInit {
 
     this.formFieldsConfig.forEach(fieldConfig => {
       const control = this.getControl(fieldConfig);
-      this.form.addControl(fieldConfig.name.toLowerCase(), control);
+      this.form.addControl(fieldConfig.name, control);
 
       this.addFormField(control, fieldConfig);
 
@@ -78,7 +75,10 @@ export class FormComponent implements OnInit {
       type: fieldConfig.type,
       size: fieldConfig.size,
       message: this.getErrorMessage(control),
-      length: fieldConfig.validations?.max
+      length: fieldConfig.validations?.max,
+      minDate:fieldConfig.validations?.minDate,
+      maxDate:fieldConfig.validations?.maxDate,
+      dataService: fieldConfig?.dataService
     };
 
     if (fieldConfig.type === 'dropdown') {
@@ -106,15 +106,17 @@ export class FormComponent implements OnInit {
   
   
 
+
   onSubmit() {
     this.errorMessage = null;
     if (!this.form.valid) return;
-
+  
     const data = this.form.value;
     this.formSubmit.emit(data);
     this.form.reset();
-
+  
     this.resetDropdownSelection = true;
-    setTimeout(() => this.resetDropdownSelection = false, 0); 
+    setTimeout(() => (this.resetDropdownSelection = false), 0);
   }
+  
 }

@@ -88,6 +88,64 @@ describe('ValidationsService', () => {
     });
   });
 
+  describe('validateItem', () => {
+    it('should return token error message for status Forbidden', () => {
+      const error = { status: ErrorStatus.Forbidden };
+      expect(ValidationsService.validateItem(error)).toBe(errorMessages['token']);
+    });
+
+    it('should return item conflict message for status Conflict', () => {
+      const error = { status: ErrorStatus.Conflict };
+      expect(ValidationsService.validateItem(error)).toBe(errorMessages['item']);
+    });
+
+    it('should return generic error message for unknown status', () => {
+      const error = { status: 500 };
+      expect(ValidationsService.validateItem(error)).toBe(errorMessages['genericError']);
+    });
+  });
+
+  describe('validateUser', () => {
+    it('should return email conflict message for status Conflict', () => {
+      const error = { status: ErrorStatus.Conflict };
+      expect(ValidationsService.validateUser(error)).toBe(errorMessages['emailConflict']);
+    });
+
+    it('should return invalid ID document message for status BadRequest', () => {
+      const error = { status: ErrorStatus.BadRequest };
+      expect(ValidationsService.validateUser(error)).toBe(errorMessages['invalidIdDocument']);
+    });
+
+    it('should return generic error message for unknown status', () => {
+      const error = { status: 500 };
+      expect(ValidationsService.validateUser(error)).toBe(errorMessages['genericError']);
+    });
+  });
+
+  describe('validateRole', () => {
+    it('should return user not found message for status NotFound', () => {
+      const error = { status: ErrorStatus.NotFound };
+      expect(ValidationsService.validateRole(error)).toBe(errorMessages['userNotFound']);
+    });
+
+    it('should return generic error message for unknown status', () => {
+      const error = { status: 500 };
+      expect(ValidationsService.validateRole(error)).toBe(errorMessages['genericError']);
+    });
+  });
+
+  describe('validateLogin', () => {
+    it('should return bad credentials message for status Unauthorized', () => {
+      const error = { status: ErrorStatus.Unauthorized };
+      expect(ValidationsService.validateLogin(error)).toBe(errorMessages['badCredentials']);
+    });
+
+    it('should return generic error message for unknown status', () => {
+      const error = { status: 500 };
+      expect(ValidationsService.validateLogin(error)).toBe(errorMessages['genericError']);
+    });
+  });
+
   describe('isNumber', () => {
     it('should return true for valid numbers', () => {
       expect(ValidationsService.isNumber(123)).toBe(true);
@@ -120,6 +178,7 @@ describe('ValidationsService', () => {
       expect(ValidationsService.isInteger('123.45')).toBe(false);
     });
   });
+
   describe('getValidators', () => {
     it('should return required validator if validations.required is true', () => {
       const validators = ValidationsService.getValidators({ type: 'string', required: true });
@@ -128,7 +187,7 @@ describe('ValidationsService', () => {
       control.updateValueAndValidity();
       expect(control.errors?.['required']).toBeTruthy();
     });
-  
+
     it('should return pattern validator if validations.pattern is set', () => {
       const pattern = '[a-z]+';
       const validators = ValidationsService.getValidators({ type: 'string', pattern });
@@ -137,7 +196,7 @@ describe('ValidationsService', () => {
       control.updateValueAndValidity();
       expect(control.errors?.['pattern']).toBeTruthy();
     });
-  
+
     it('should return email validator if validations.email is true', () => {
       const validators = ValidationsService.getValidators({ type: 'string', email: true });
       const control = new FormControl('invalid-email');
@@ -145,7 +204,7 @@ describe('ValidationsService', () => {
       control.updateValueAndValidity();
       expect(control.errors?.['email']).toBeTruthy();
     });
-  
+
     it('should return minLength validator for type string', () => {
       const validators = ValidationsService.getValidators({ type: 'string', min: 3 });
       const control = new FormControl('ab');
@@ -153,7 +212,7 @@ describe('ValidationsService', () => {
       control.updateValueAndValidity();
       expect(control.errors?.['minlength']).toBeTruthy();
     });
-  
+
     it('should return max validator for type number', () => {
       const validators = ValidationsService.getValidators({ type: 'number', max: 10 });
       const control = new FormControl(11);
@@ -161,7 +220,7 @@ describe('ValidationsService', () => {
       control.updateValueAndValidity();
       expect(control.errors?.['max']).toBeTruthy();
     });
-  
+
     it('should include integer validator if isInteger is true', () => {
       const validators = ValidationsService.getValidators({ type: 'number', isInteger: true });
       const control = new FormControl(12.5);
@@ -169,7 +228,7 @@ describe('ValidationsService', () => {
       control.updateValueAndValidity();
       expect(control.errors?.['notAInteger']).toBeTruthy();
     });
-  
+
     it('should return maxLengthExceeded error for array length greater than max in list validator', () => {
       const validators = ValidationsService.getValidators({ type: 'list', max: 2 });
       const control = new FormControl([1, 2, 3]);
@@ -181,5 +240,4 @@ describe('ValidationsService', () => {
       });
     });
   });
-  
 });

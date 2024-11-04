@@ -1,13 +1,15 @@
 import { Component } from '@angular/core';
 import { EnumSize } from 'src/app/shared/constant/enumSize';
 import { PageConstants } from 'src/app/shared/constant/stringConstants/pageConstants';
-import { Category } from 'src/app/shared/models/category';
-import { Brand } from 'src/app/shared/models/brand';
 import { Item } from 'src/app/shared/models/Item';
 import { ItemService } from 'src/app/shared/service/item/item.service';
 import { ValidationsService } from 'src/app/shared/service/validations/validations.service';
 import { ItemRequest } from 'src/app/shared/models/ItemRequest';
 import { DisplayItem } from 'src/app/shared/models/displayItem';
+import { AuthService } from 'src/app/shared/service/auth/auth.service';
+import { Router } from '@angular/router';
+import { CategoryService } from 'src/app/shared/service/category/category.service';
+import { BrandService } from 'src/app/shared/service/brand/brand.service';
 
 @Component({
   selector: 'app-item',
@@ -15,11 +17,6 @@ import { DisplayItem } from 'src/app/shared/models/displayItem';
   styleUrls: ['./item.component.scss']
 })
 export class ItemComponent {
-  constructor(private readonly itemService: ItemService) {}
-
-  ngOnInit(): void {
-    this.loadData(this.pagination.page, this.pagination.size, this.pagination.order);
-  }
 
   currentSortField: string = 'name';
   isDescendingOrder: boolean = true;
@@ -88,7 +85,9 @@ export class ItemComponent {
         type: 'list',
         max: 3,
         required: true,
-      }
+      },
+      dataService: this.categoryService
+
     },
     {
       name: 'brand',
@@ -99,7 +98,8 @@ export class ItemComponent {
         type: 'list',
         max: 1,
         required: true,
-      }
+      },
+      dataService: this.brandService
     },
   ];
 
@@ -120,28 +120,50 @@ export class ItemComponent {
     order: PageConstants.ORDER
   }
 
-  loadData(page: number, size: number, order: string = this.pagination.order, orderField: string = this.currentSortField): void {
-    if (orderField === 'name') {
-      this.itemService.getItem(page - PageConstants.FIRST, size, order).subscribe({
-        next: (paginationData) => {
-          this.items = this.transformToDisplayItems(paginationData.content);
-          this.pagination.totalPages = paginationData.totalPages;
-        },
-        error: (error) => {
-          console.error(PageConstants.ERROR_ITEMS, error);
-        }
-      });
-    } else {
-      this.itemService.getItemByField(page - PageConstants.FIRST, size, order, orderField).subscribe({
-        next: (paginationData) => {
-          this.items = this.transformToDisplayItems(paginationData.content);
-          this.pagination.totalPages = paginationData.totalPages;
-        },
-        error: (error) => {
-          console.error(PageConstants.ERROR_ITEMS, error);
-        }
-      });
+  isLogged!: string | null;
+  isAdmin!: boolean;
+
+  constructor(
+    private readonly itemService: ItemService,
+    private readonly authService: AuthService,
+    private readonly brandService: BrandService,
+    private readonly categoryService: CategoryService,
+    private readonly router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.checkAdminRole();
+    this.loadData(this.pagination.page, this.pagination.size, this.pagination.order);
+  }
+
+  private checkAdminRole(): void {
+    this.isLogged = this.authService.getRole();
+    this.isAdmin = this.isLogged === 'ROLE_ADMIN';
+
+    if (!this.isLogged) {
+      this.router.navigate(['/auth-required']);
     }
+  }
+
+  loadData(page: number, size: number, order: string = this.pagination.order, orderField: string = this.currentSortField): void {
+    const adjustedPage = page - PageConstants.FIRST;
+    let observable;
+  
+    if (orderField === 'name') {
+      observable = this.itemService.getItem(adjustedPage, size, order);
+    } else {
+      observable = this.itemService.getItemByField(adjustedPage, size, order, orderField);
+    }
+  
+    observable.subscribe({
+      next: (paginationData) => {
+        this.items = this.transformToDisplayItems(paginationData.content);
+        this.pagination.totalPages = paginationData.totalPages;
+      },
+      error: (error) => {
+        console.error(PageConstants.ERROR_ITEMS, error);
+      }
+    });
   }
 
   onSortChange(sortData: { field: string, order: string }): void {
@@ -166,32 +188,39 @@ export class ItemComponent {
     this.loadData(this.pagination.page, this.pagination.size, this.pagination.order, this.currentSortField);
   }
 
-  onFormSubmit(data: ItemRequest | Brand | Category) {
-    if (this.isItemRequestData(data)) {
-      const itemRequest: ItemRequest = {
-        name: data.name,
-        description: data.description,
-        quantity: Number(data.quantity),
-        price: Number(data.price),
-        category: data.category,
-        brand: Number(data.brand)
-      };
-      this.itemService.createItem(itemRequest).subscribe({
-        next: () => {
-          this.loadData(this.pagination.page, this.pagination.size, this.pagination.order);
-        },
-        error: (error) => {
-          console.error("Error en createItem:", error);
-          this.errorMessage = ValidationsService.validateCategory(error);
-        }
-      });
-    } else {
+  onFormSubmit(data: unknown): void {
+    if (!this.isItemRequestData(data)) {
       console.error("Datos no válidos recibidos en onSubmit:", data);
+      return;
     }
+
+    const itemRequest = this.createItemRequest(data);
+    this.itemService.createItem(itemRequest).subscribe({
+      next: () => this.loadData(this.pagination.page, this.pagination.size, this.pagination.order),
+      error: (error) => {
+        console.error('Error en createItem:', error);
+        this.errorMessage = ValidationsService.validateItem(error);
+      }
+    });
   }
 
-  private isItemRequestData(data: any): data is ItemRequest {
-    return 'quantity' in data && 'price' in data && 'category' in data && 'brand' in data;
+  private isItemRequestData(data: unknown): data is ItemRequest {
+    return typeof data === 'object' && data !== null && 
+      'quantity' in data && 
+      'price' in data && 
+      'category' in data && 
+      'brand' in data;
+  }
+
+  private createItemRequest(data: ItemRequest): ItemRequest {
+    return {
+      name: data.name,
+      description: data.description,
+      quantity: Number(data.quantity),
+      price: Number(data.price),
+      category: data.category,
+      brand: Number(data.brand)
+    };
   }
 
   transformToDisplayItems(items: Item[]): DisplayItem[] {

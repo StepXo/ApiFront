@@ -4,8 +4,7 @@ import { MoleculeModule } from './molecule/molecule.module';
 import { OrganismModule } from './organism/organism.module';
 
 @NgModule({
-  declarations: [
-  ],
+  declarations: [  ],
   imports: [
     AtomModule,
     MoleculeModule,

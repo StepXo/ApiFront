@@ -15,9 +15,22 @@ const routes: Routes = [
   {path: 'item',
     loadChildren:() => import('./component/page/item/item.module').then(x=>x.ItemModule)
   },
+  {path: 'login',
+    loadChildren:() => import('./component/page/login/login.module').then(x=>x.LoginModule)
+  },
+  {path: 'register',
+    loadChildren:() => import('./component/page/register/register.module').then(x=>x.RegisterModule)
+  },
+  { path: 'auth-required', 
+    loadChildren: () => import('./component/page/auth-required/auth-required.module').then(x => x.AuthRequiredModule) 
+  },
+  { path: 'role', 
+    loadChildren: () => import('./component/page/role/role.module').then(x => x.RoleModule) 
+  },
   { path: '**', 
     loadChildren:() => import('./component/page/not-found/not-found.module').then(x=>x.NotFoundModule) 
-  }
+  },
+
 ];
 
 @NgModule({

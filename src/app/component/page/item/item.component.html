@@ -4,6 +4,7 @@
     
     <app-form 
         class="item-form"
+        *ngIf="isAdmin"
         [formName]="formName"
         [button]="button"
         [formFieldsConfig]="formFieldsConfig"

@@ -1,9 +1,9 @@
 <app-header></app-header>
 
 <div class="app-container">
-    
     <app-form 
         class="brand-form"
+        *ngIf="isAdmin"
         [formName]="formName"
         [button]="button"
         [formFieldsConfig]="formFieldsConfig"

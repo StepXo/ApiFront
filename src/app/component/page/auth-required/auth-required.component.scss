@@ -1,0 +1,13 @@
+.auth-required-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem;
+    text-align: center;
+
+    p {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+}

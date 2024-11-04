@@ -1,0 +1,12 @@
+<div class="date-input-container">
+    <span class="floating-label">{{ label }}</span>
+    <input
+    class="custom-date"
+    [ngClass]="[size, control.invalid && (control.touched || control.dirty) ? 'error' : '']"
+    type="date"
+    [formControl]="control"
+    [attr.disabled]="isDisabled ? true : null"
+    [min]="minDate"
+    [max]="maxDate"
+    />
+</div>
