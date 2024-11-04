@@ -3,8 +3,9 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Item } from '../../models/Item';
 import { ItemResponse } from '../../models/ItemResponse';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable, tap } from 'rxjs';
 import { ItemRequest } from '../../models/ItemRequest';
+import { DropdownItem } from '../../models/dropdownItem';
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +33,24 @@ export class ItemService {
       .set('size', size.toString())
       .set('order', order);
     return this.http.get<ItemResponse>(`${this.apiUrl}/${field}`, { params });
+  }
+
+  private readonly itemSubject = new BehaviorSubject<Item[]>([]);
+  items$ = this.itemSubject.asObservable();
+
+  getItemList(): Observable<Item[]> {
+    return this.http.get<Item[]>(`${this.apiUrl}/list`).pipe(
+      tap(item => this.itemSubject.next(item))
+    );
+  }
+
+  getData(): Observable<DropdownItem[]> {
+    return this.getItemList().pipe(
+      map(item => item.map(item => ({
+        id: item.id,
+        name: item.name
+      })))
+    );
   }
 }
 

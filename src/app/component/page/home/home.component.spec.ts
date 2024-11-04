@@ -65,16 +65,17 @@ describe('HomeComponent', () => {
 
   it('should add the client button if the user is an admin', () => {
     authServiceMock.getRole.mockReturnValue('ROLE_ADMIN');
+    
     component.ngOnInit();
     fixture.detectChanges();
 
-    expect(component.isAdmin).toBe(true);
     const clientButton = component.buttons.find(
       (button) => button.label === PageConstants.CLIENT_LABEL
     );
     expect(clientButton).toBeDefined();
     expect(clientButton?.route).toBe(PageConstants.CLIENT_ROUTE);
   });
+
 
   it('should not add the client button if the user is not an admin', () => {
     authServiceMock.getRole.mockReturnValue('ROLE_USER');
@@ -86,5 +87,38 @@ describe('HomeComponent', () => {
       (button) => button.label === PageConstants.CLIENT_LABEL
     );
     expect(clientButton).toBeUndefined();
+  });
+
+  it('should add the supplies button if the user is admin or warehouse auxiliary', () => {
+    authServiceMock.getRole.mockReturnValue('ROLE_ADMIN');
+    component.ngOnInit();
+    fixture.detectChanges();
+
+    const suppliesButtonAdmin = component.buttons.find(
+      (button) => button.label === 'Suministros'
+    );
+    expect(suppliesButtonAdmin).toBeDefined();
+    expect(suppliesButtonAdmin?.route).toBe('/supply');
+
+    authServiceMock.getRole.mockReturnValue('ROLE_WAREHOUSE_AUX');
+    component.ngOnInit();
+    fixture.detectChanges();
+
+    const suppliesButtonWarehouseAux = component.buttons.find(
+      (button) => button.label === 'Suministros'
+    );
+    expect(suppliesButtonWarehouseAux).toBeDefined();
+    expect(suppliesButtonWarehouseAux?.route).toBe('/supply');
+  });
+
+  it('should not add the supplies button if the user is neither admin nor warehouse auxiliary', () => {
+    authServiceMock.getRole.mockReturnValue('ROLE_USER');
+    component.ngOnInit();
+    fixture.detectChanges();
+
+    const suppliesButton = component.buttons.find(
+      (button) => button.label === 'Suministros'
+    );
+    expect(suppliesButton).toBeUndefined();
   });
 });

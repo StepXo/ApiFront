@@ -1,0 +1,25 @@
+.app-container {
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    min-height: 75vh;
+    gap: 8px; 
+    flex-direction: column;
+
+}
+.spacing{
+    height: 50px;
+}
+.left{
+    margin-right: 230px;
+}
+
+@media (max-width: 752px) {
+    .spacing{
+        height: 25px;
+    }
+    .app-container {
+        flex-direction: column; 
+        align-items: center;
+    }
+}
