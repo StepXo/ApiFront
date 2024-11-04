@@ -11,8 +11,14 @@ export const errorMessages: { [key: string]: string | ((error: any) => string) }
   token: 'No estás autorizado o el token ha vencido.',
   category: 'Ya existe una categoría con ese nombre.',
   brand: 'Ya existe una marca con ese nombre.',
+  item: 'Ya existe un articulo con ese nombre.',
   genericError: 'Error desconocido, por favor inténtalo de nuevo.',
   minDate: (error) => `La fecha debe ser posterior o igual a ${error.requiredDate}`,
   maxDate: (error) => `La fecha debe ser anterior o igual a ${error.requiredDate}`,
-  ageDate: (error) => `Debes tener al menos 18 años para registrarte.`,
+  ageDate: () => `Debes tener al menos 18 años para registrarte.`,
+  emailConflict: 'El correo electrónico ya está registrado.',
+  invalidIdDocument: 'El documento de identidad es inválido.',
+  userNotFound: 'El usuario no se encuentra registrado.',
+  badCredentials: 'Las credenciales son incorrectas. Por favor, verifica tus datos.',
+
 };

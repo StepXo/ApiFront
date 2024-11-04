@@ -4,10 +4,12 @@ import { EnumSize } from 'src/app/shared/constant/enumSize';
 import { PageConstants } from 'src/app/shared/constant/stringConstants/pageConstants';
 import { ButtonConfig } from 'src/app/shared/models/buttonConfig';
 import { FormFieldConfig } from 'src/app/shared/models/formFieldConfig';
+import { RoleEnum } from 'src/app/shared/models/roleEnum';
 import { User } from 'src/app/shared/models/user';
 import { AuthService } from 'src/app/shared/service/auth/auth.service';
 import { AuthPipe } from 'src/app/shared/service/pipe/auth-pipe.pipe';
 import { RoleDataService } from 'src/app/shared/service/role/role-data.service';
+import { ValidationsService } from 'src/app/shared/service/validations/validations.service';
 
 @Component({
   selector: 'app-register',
@@ -21,7 +23,6 @@ export class RegisterComponent {
     label: 'Registrar',
     size: EnumSize.Medium
   };
-  modifyUserLabel = '¿Quieres modificar un usuario?';
   errorMessage: string | null = null;
   today: string = new Date().toISOString().split('T')[0];
   ageDate: string;
@@ -38,8 +39,8 @@ export class RegisterComponent {
     private readonly authService: AuthService,
     private readonly authPipe: AuthPipe,
     private readonly router: Router,
-    private readonly roleDataService: RoleDataService
-
+    private readonly roleDataService: RoleDataService,
+    private readonly validationsService: ValidationsService
   ) {
     this.isAdmin = this.authService.getRole() === 'ROLE_ADMIN';
 
@@ -54,7 +55,7 @@ export class RegisterComponent {
       {
         name: 'name',
         label: 'Nombre',
-        type: 'text',
+        type: 'input',
         size: EnumSize.Medium,
         validations: {
           type: 'string',
@@ -91,7 +92,7 @@ export class RegisterComponent {
       {
         name: 'password',
         label: 'Contraseña',
-        type: 'text',
+        type: 'password',
         size: EnumSize.Medium,
         validations: {
           type: 'string',
@@ -157,7 +158,6 @@ export class RegisterComponent {
   }
 
   private initializeButtonConfigs(role: string | null): void {
-    console.log(role)
     this.backButtonConfig = {
       label: 'Volver a inicio',
       size: this.size,
@@ -179,35 +179,58 @@ export class RegisterComponent {
     }
   
     if (this.isAdmin && 'role' in formData) {
+      const roleMapping: { [key: number]: RoleEnum } = {
+        1: RoleEnum.USER,
+        2: RoleEnum.ADMIN,
+        3: RoleEnum.WAREHOUSE_AUX
+      };
+  
+      const roleIndex = Number(formData.role);
+      formData.role = roleMapping[roleIndex];
+  
+      if (!formData.role) {
+        this.errorMessage = 'Rol inválido. Por favor, verifica el formulario.';
+        return;
+      }
+  
       this.registerAdminUser(formData);
     } else {
       this.registerStandardUser(formData);
     }
   }
   
+  
   private registerAdminUser(user: User): void {
     this.authService.registerAdmin(user).subscribe({
-      next: () => this.handleNavigation(),
-      error: () => {
-        this.errorMessage = 'Error en el registro de administrador. Por favor, inténtalo de nuevo.';
+      next: () => {
+        this.errorMessage = null;
+        alert('Rol de usuario creado con éxito');
+      },
+      error: (error) => {
+        this.errorMessage = ValidationsService.validateUser(error);
       }
     });
   }
-  
+
   private registerStandardUser(formData: User): void {
     this.authPipe.transform(this.authService.register(formData)).subscribe({
-      next: () => this.handleNavigation(),
-      error: () => {
-        this.errorMessage = 'Error en el registro. Por favor, inténtalo de nuevo.';
+      next: () => {
+        this.handleNavigation();
+      },
+      error: (error) => {
+        this.errorMessage = ValidationsService.validateUser(error);
       }
     });
   }
-  
-  private handleNavigation(): void {
-    this.router.navigate(['/home']).catch(() => {
+
+  private async handleNavigation(): Promise<void> {
+    try {
+      await this.router.navigate(['/home']);
+    } catch {
       this.errorMessage = 'Error al redirigir después del registro.';
-    });
+    }
   }
+  
   
 
   private isUser(data: unknown): data is User {

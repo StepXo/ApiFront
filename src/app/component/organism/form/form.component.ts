@@ -106,15 +106,17 @@ export class FormComponent implements OnInit {
   
   
 
+
   onSubmit() {
     this.errorMessage = null;
     if (!this.form.valid) return;
-
+  
     const data = this.form.value;
     this.formSubmit.emit(data);
     this.form.reset();
-
+  
     this.resetDropdownSelection = true;
-    setTimeout(() => this.resetDropdownSelection = false, 0); 
+    setTimeout(() => (this.resetDropdownSelection = false), 0);
   }
+  
 }

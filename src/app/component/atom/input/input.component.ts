@@ -12,7 +12,7 @@ export class InputComponent {
 
   @Input() control: FormControl = new FormControl();
   @Input() label: string = AtomConstants.EMPTY;
-  
+  @Input() type: string = 'text'
   @Input() isDisabled: boolean = false;
   @Input() size: EnumSize = EnumSize.Medium;
 }

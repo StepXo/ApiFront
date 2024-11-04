@@ -16,7 +16,7 @@ export class AuthService {
   constructor(private readonly http: HttpClient) {}
 
   login(login: Login): Observable<string> {
-    return this.http.post<{ token: string }>(`${this.apiUrl}/login`, login).pipe(
+    return this.http.post<{ token: string }>(`${this.apiUrl}/auth/login`, login).pipe(
       map(response => {
         this.setToken(response.token);
         return response.token;
@@ -25,7 +25,7 @@ export class AuthService {
   }
 
   register(user: User): Observable<string> {
-    return this.http.post<{ token: string }>(`${this.apiUrl}/register`, user).pipe(
+    return this.http.post<{ token: string }>(`${this.apiUrl}/auth/register`, user).pipe(
       map(response => {
         this.setToken(response.token);
         return response.token;
@@ -34,8 +34,13 @@ export class AuthService {
   }
 
   registerAdmin(user: User): Observable<string> {
-    return this.http.post<string>(`${this.apiUrl}/register/admin`, user);
+    return this.http.post<string>(`${this.apiUrl}/admin`, user);
   }
+
+  setRole(data: { id: number; role: string }): Observable<string> {
+    return this.http.post<string>(`${this.apiUrl}/admin/role`, data);
+  }
+
 
   setToken(token: string): void {
     localStorage.setItem(this.tokenKey, token);

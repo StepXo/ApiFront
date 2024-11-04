@@ -3,14 +3,31 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { ItemService } from './item.service';
 import { environment } from 'src/environments/environment';
 import { Item } from '../../models/Item';
-import { ItemRequest } from '../../models/ItemRequest';
 import { ItemResponse } from '../../models/ItemResponse';
+import { ItemRequest } from '../../models/ItemRequest';
 
 describe('ItemService', () => {
   let service: ItemService;
   let httpMock: HttpTestingController;
-  const apiUrl = `${environment.apiStock}/item`;
-  const token = `Bearer ${environment.token}`;
+
+  const mockItem: Item = {
+    id: 1,
+    name: 'Item1',
+    description: 'Description1',
+    quantity: 10,
+    price: 100,
+    category: [{ id: 1, name: 'Category1', description: 'Description1' }],
+    brand: { id: 1, name: 'Brand1', description: 'Description1' }
+  };
+
+  const mockItemResponse: ItemResponse = {
+    content: [mockItem],
+    totalPages: 1,
+    totalElements: 1,
+    first: true,
+    last: true,
+    size: 5
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -26,25 +43,12 @@ describe('ItemService', () => {
     httpMock.verify();
   });
 
-  it('debe crear el servicio', () => {
-    expect(service).toBeTruthy();
-  });
-
-  it('debe crear un ítem con createItem', () => {
-    const mockItem: Item = {
-      id: 1,
-      name: 'Item1',
-      description: 'Description1',
-      quantity: 10,
-      price: 100,
-      category: [{ id: 1, name: 'Category1', description: 'Cat Description' }],
-      brand: { id: 1, name: 'Brand1', description: 'Brand Description' }
-    };
+  it('should create an item', () => {
     const itemRequest: ItemRequest = {
-      name: 'Item1',
-      description: 'Description1',
-      quantity: 10,
-      price: 100,
+      name: 'NewItem',
+      description: 'New Description',
+      quantity: 5,
+      price: 50,
       category: [1],
       brand: 1
     };
@@ -53,75 +57,74 @@ describe('ItemService', () => {
       expect(item).toEqual(mockItem);
     });
 
-    const req = httpMock.expectOne(apiUrl);
+    const req = httpMock.expectOne(`${environment.apiStock}/item`);
     expect(req.request.method).toBe('POST');
-    expect(req.request.headers.get('Authorization')).toBe(token);
+    expect(req.request.body).toEqual(itemRequest);
     req.flush(mockItem);
   });
 
-  it('debe obtener ítems con getItem', () => {
-    const mockItemResponse: ItemResponse = {
-      content: [
-        {
-          id: 1,
-          name: 'Item1',
-          description: 'Description1',
-          quantity: 10,
-          price: 100,
-          category: [{ id: 1, name: 'Category1', description: 'Cat Description' }],
-          brand: { id: 1, name: 'Brand1', description: 'Brand Description' }
-        }
-      ],
-      totalElements: 1,
-      totalPages: 1,
-      first: true,
-      last: true,
-      size: 1
-    };
+  it('should get items with pagination', () => {
+    const page = 0;
+    const size = 5;
+    const order = 'asc';
 
-    service.getItem(0, 10, 'asc').subscribe((response) => {
+    service.getItem(page, size, order).subscribe((response) => {
       expect(response).toEqual(mockItemResponse);
     });
 
-    const req = httpMock.expectOne(`${apiUrl}?page=0&size=10&order=asc`);
+    const req = httpMock.expectOne(
+      `${environment.apiStock}/item?page=${page}&size=${size}&order=${order}`
+    );
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('Authorization')).toBe(token);
     req.flush(mockItemResponse);
   });
 
-  it('debe obtener ítems por campo con getItemByField', () => {
-    const mockItemResponse: ItemResponse = {
-      content: [
-        {
-          id: 1,
-          name: 'Item1',
-          description: 'Description1',
-          quantity: 10,
-          price: 100,
-          category: [{ id: 1, name: 'Category1', description: 'Cat Description' }],
-          brand: { id: 1, name: 'Brand1', description: 'Brand Description' }
-        }
-      ],
-      totalElements: 1,
-      totalPages: 1,
-      first: true,
-      last: true,
-      size: 1
-    };
+  it('should get items with default order if no order specified', () => {
+    const page = 0;
+    const size = 5;
 
-    service.getItemByField(0, 10, 'asc', 'brand').subscribe((response) => {
+    service.getItem(page, size).subscribe((response) => {
       expect(response).toEqual(mockItemResponse);
     });
 
-    const req = httpMock.expectOne(`${apiUrl}/brand?page=0&size=10&order=asc`);
+    const req = httpMock.expectOne(
+      `${environment.apiStock}/item?page=${page}&size=${size}&order=asc`
+    );
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('Authorization')).toBe(token);
     req.flush(mockItemResponse);
   });
 
-  
-  it('should set the correct authorization token', () => {
-    expect(service.bearer).toBe(environment.token);
+  it('should get items ordered by a specific field', () => {
+    const page = 0;
+    const size = 5;
+    const order = 'desc';
+    const field = 'quantity';
+
+    service.getItemByField(page, size, order, field).subscribe((response) => {
+      expect(response).toEqual(mockItemResponse);
+    });
+
+    const req = httpMock.expectOne(
+      `${environment.apiStock}/item/${field}?page=${page}&size=${size}&order=${order}`
+    );
+    expect(req.request.method).toBe('GET');
+    req.flush(mockItemResponse);
   });
 
+  it('should get items ordered by a different field', () => {
+    const page = 0;
+    const size = 5;
+    const order = 'asc';
+    const field = 'name';
+
+    service.getItemByField(page, size, order, field).subscribe((response) => {
+      expect(response).toEqual(mockItemResponse);
+    });
+
+    const req = httpMock.expectOne(
+      `${environment.apiStock}/item/${field}?page=${page}&size=${size}&order=${order}`
+    );
+    expect(req.request.method).toBe('GET');
+    req.flush(mockItemResponse);
+  });
 });

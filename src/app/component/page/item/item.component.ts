@@ -190,6 +190,7 @@ export class ItemComponent {
 
   onFormSubmit(data: unknown): void {
     if (!this.isItemRequestData(data)) {
+      console.error("Datos no válidos recibidos en onSubmit:", data);
       return;
     }
 
@@ -197,7 +198,8 @@ export class ItemComponent {
     this.itemService.createItem(itemRequest).subscribe({
       next: () => this.loadData(this.pagination.page, this.pagination.size, this.pagination.order),
       error: (error) => {
-        this.errorMessage = ValidationsService.validateCategory(error);
+        console.error('Error en createItem:', error);
+        this.errorMessage = ValidationsService.validateItem(error);
       }
     });
   }

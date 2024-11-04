@@ -6,5 +6,5 @@ export interface User{
     idDocument:number;
     phoneNumber:string;
     birthDate:string;
-    role?:string;
+    role?:string | number;
 }

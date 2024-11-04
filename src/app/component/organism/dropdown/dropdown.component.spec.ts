@@ -3,17 +3,16 @@ import { DropdownComponent } from './dropdown.component';
 import { CategoryService } from 'src/app/shared/service/category/category.service';
 import { BrandService } from 'src/app/shared/service/brand/brand.service';
 import { FormControl } from '@angular/forms';
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import { Brand } from 'src/app/shared/models/brand';
 import { Category } from 'src/app/shared/models/category';
 import { FormField } from 'src/app/shared/models/formField';
 import { EnumSize } from 'src/app/shared/constant/enumSize';
-import { SimpleChange } from '@angular/core';
+import { SimpleChange, ElementRef } from '@angular/core';
 
 describe('DropdownComponent', () => {
   let component: DropdownComponent;
   let fixture: ComponentFixture<DropdownComponent>;
-  let categoryService: jest.Mocked<CategoryService>;
 
   const mockBrands: Brand[] = [
     { id: 1, name: 'Brand1', description: 'Description1' },
@@ -53,7 +52,7 @@ describe('DropdownComponent', () => {
     fixture = TestBed.createComponent(DropdownComponent);
     component = fixture.componentInstance;
     component.formField = mockFormField;
-    categoryService = TestBed.inject(CategoryService) as jest.Mocked<CategoryService>;
+    component.dropdownContainer = { nativeElement: document.createElement('div') } as ElementRef;
     fixture.detectChanges();
   });
 
@@ -62,22 +61,16 @@ describe('DropdownComponent', () => {
   });
 
   it('debe cargar categorías cuando el label es "Categoria"', () => {
-    component.loadData('Categoria');
-    expect(categoryService.getCategoryList).toHaveBeenCalled();
+    const dataServiceMock = { getData: jest.fn().mockReturnValue(of(mockCategories)) };
+    component.formField = { ...mockFormField, dataService: dataServiceMock } as any;
+    component.ngOnInit();
+    expect(dataServiceMock.getData).toHaveBeenCalled();
     expect(component.data).toEqual(mockCategories);
-  });
-
-  it('debe manejar errores al cargar categorías', () => {
-    jest.spyOn(console, 'error').mockImplementation();
-    categoryService.getCategoryList.mockReturnValue(throwError(() => new Error('Error loading categories')));
-    component.loadData('Categoria');
-    expect(console.error).toHaveBeenCalledWith('Error loading categories:', new Error('Error loading categories'));
   });
 
   it('debe seleccionar y deseleccionar un ítem', () => {
     component.selectItem(mockCategories[0]);
     expect(component.selectedItems).toContain(mockCategories[0]);
-
     component.selectItem(mockCategories[0]);
     expect(component.selectedItems).not.toContain(mockCategories[0]);
   });
@@ -85,7 +78,6 @@ describe('DropdownComponent', () => {
   it('debe abrir y cerrar el dropdown', () => {
     component.toggleDropdown();
     expect(component.isOpen).toBeTruthy();
-
     component.toggleDropdown();
     expect(component.isOpen).toBeFalsy();
   });
@@ -93,7 +85,6 @@ describe('DropdownComponent', () => {
   it('debe establecer el estado del dropdown con setDropdownState', () => {
     component.setDropdownState(true);
     expect(component.isOpen).toBeTruthy();
-
     component.setDropdownState(false);
     expect(component.isOpen).toBeFalsy();
   });
@@ -101,7 +92,6 @@ describe('DropdownComponent', () => {
   it('debe deshabilitar el input cuando el límite de selección es alcanzado', () => {
     component.selectedItems = [mockCategories[0], mockCategories[1]];
     expect(component.isInputDisabled()).toBe(false);
-
     component.selectedItems.push(mockBrands[0]);
     expect(component.isInputDisabled()).toBe(true);
   });
@@ -124,7 +114,6 @@ describe('DropdownComponent', () => {
   it('debe filtrar los ítems correctamente', (done) => {
     component.data = mockBrands;
     component.onInputChange({ target: { value: 'Brand1' } } as any);
-    
     setTimeout(() => {
       expect(component.filteredItems).toEqual([mockBrands[0]]);
       done();
@@ -144,5 +133,13 @@ describe('DropdownComponent', () => {
     component.removeItem(mockBrands[0]);
     expect(component.selectedItems).not.toContain(mockBrands[0]);
     expect(component.formField.control.value).toEqual([]);
+  });
+
+  it('debe reiniciar el estado de selección del dropdown', (done) => {
+    component.selectedItems = [mockCategories[0]];
+    component.clearAllSelections();
+    expect(component.selectedItems.length).toBe(0);
+    expect(component.formField.control.value).toEqual([]);
+    done();
   });
 });

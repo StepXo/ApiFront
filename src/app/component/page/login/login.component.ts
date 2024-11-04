@@ -4,6 +4,7 @@ import { EnumSize } from 'src/app/shared/constant/enumSize';
 import { FormFieldConfig } from 'src/app/shared/models/formFieldConfig';
 import { AuthService } from 'src/app/shared/service/auth/auth.service';
 import { AuthPipe } from 'src/app/shared/service/pipe/auth-pipe.pipe';
+import { ValidationsService } from 'src/app/shared/service/validations/validations.service';
 
 @Component({
   selector: 'app-login',
@@ -24,7 +25,8 @@ export class LoginComponent {
   constructor(
     private readonly authService: AuthService,
     private readonly authPipe: AuthPipe,
-    private readonly router: Router
+    private readonly router: Router,
+
   ) {
     this.formFieldsConfig = [
       {
@@ -41,7 +43,7 @@ export class LoginComponent {
       {
         name: 'password',
         label: 'Contraseña',
-        type: 'text',
+        type: 'password',
         size: EnumSize.Medium,
         validations: {
           type: 'string',
@@ -61,8 +63,8 @@ export class LoginComponent {
       next: () => {
         this.router.navigate(['/home']);
       },
-      error: () => {
-        this.errorMessage = 'Error al iniciar sesión. Por favor, inténtalo de nuevo.';
+      error: (error) => {
+        this.errorMessage = ValidationsService.validateLogin(error);
       }
     });
   }

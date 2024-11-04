@@ -1,7 +1,6 @@
 import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { EnumSize } from 'src/app/shared/constant/enumSize';
-import { DropdownDataService } from 'src/app/shared/models/dropdownDataService';
 import { DropdownItem } from 'src/app/shared/models/dropdownItem';
 import { FormField } from 'src/app/shared/models/formField';
 import { ValidationsService } from 'src/app/shared/service/validations/validations.service';

@@ -8,7 +8,7 @@ export class PageConstants {
     static readonly LABEL_NAME: string = 'Nombre';
     static readonly DESCRIPTION: string = 'description';
     static readonly LABEL_DESCRIPTION: string = 'Descripción';
-    static readonly INPUT: string = 'input';
+    static readonly INPUT: string = 'text';
     static readonly TEXT_AREA: string = 'textarea';
     static readonly ORDER: string = 'asc';
 

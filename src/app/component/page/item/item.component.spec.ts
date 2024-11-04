@@ -1,15 +1,25 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ItemComponent } from './item.component';
 import { ItemService } from 'src/app/shared/service/item/item.service';
+import { AuthService } from 'src/app/shared/service/auth/auth.service';
+import { BrandService } from 'src/app/shared/service/brand/brand.service';
+import { CategoryService } from 'src/app/shared/service/category/category.service';
+import { Router } from '@angular/router';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of, throwError } from 'rxjs';
 import { DisplayItem } from 'src/app/shared/models/displayItem';
 import { ItemRequest } from 'src/app/shared/models/ItemRequest';
 import { PageConstants } from 'src/app/shared/constant/stringConstants/pageConstants';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('ItemComponent', () => {
   let component: ItemComponent;
   let fixture: ComponentFixture<ItemComponent>;
-  let itemService: jest.Mocked<ItemService>;
+  let itemServiceMock: Partial<jest.Mocked<ItemService>>;
+  let authServiceMock: Partial<jest.Mocked<AuthService>>;
+  let brandServiceMock: Partial<jest.Mocked<BrandService>>;
+  let categoryServiceMock: Partial<jest.Mocked<CategoryService>>;
+  let routerMock: any;
 
   const mockItemsResponse = {
     content: [
@@ -57,20 +67,38 @@ describe('ItemComponent', () => {
   ];
 
   beforeEach(async () => {
-    const itemServiceMock = {
+    itemServiceMock = {
       getItem: jest.fn().mockReturnValue(of(mockItemsResponse)),
       getItemByField: jest.fn().mockReturnValue(of(mockItemsResponse)),
       createItem: jest.fn().mockReturnValue(of({}))
     };
 
+    authServiceMock = {
+      getRole: jest.fn().mockReturnValue('ROLE_ADMIN')
+    };
+
+    brandServiceMock = {};
+    categoryServiceMock = {};
+
+    routerMock = {
+      navigate: jest.fn()
+    };
+
     await TestBed.configureTestingModule({
       declarations: [ItemComponent],
-      providers: [{ provide: ItemService, useValue: itemServiceMock }]
+      imports: [HttpClientTestingModule],
+      providers: [
+        { provide: ItemService, useValue: itemServiceMock },
+        { provide: AuthService, useValue: authServiceMock },
+        { provide: BrandService, useValue: brandServiceMock },
+        { provide: CategoryService, useValue: categoryServiceMock },
+        { provide: Router, useValue: routerMock }
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA] 
     }).compileComponents();
 
     fixture = TestBed.createComponent(ItemComponent);
     component = fixture.componentInstance;
-    itemService = TestBed.inject(ItemService) as jest.Mocked<ItemService>;
     fixture.detectChanges();
   });
 
@@ -81,31 +109,25 @@ describe('ItemComponent', () => {
   it('debe cargar datos usando getItem cuando orderField es name', () => {
     component.currentSortField = 'name';
     component.loadData(1, 10, 'asc');
-    expect(itemService.getItem).toHaveBeenCalledWith(0, 10, 'asc');
+    expect(itemServiceMock.getItem).toHaveBeenCalledWith(0, 10, 'asc');
     expect(component.items).toEqual(transformedMockItems);
   });
-  
+
   it('debe cargar datos usando getItemByField cuando orderField no es name', () => {
     component.currentSortField = 'category';
     component.loadData(1, 10, 'asc', 'category');
-    expect(itemService.getItemByField).toHaveBeenCalledWith(0, 10, 'asc', 'category');
+    expect(itemServiceMock.getItemByField).toHaveBeenCalledWith(0, 10, 'asc', 'category');
     expect(component.items).toEqual(transformedMockItems);
   });
 
   it('debe manejar errores al cargar datos', () => {
     jest.spyOn(console, 'error').mockImplementation();
-    itemService.getItem.mockReturnValue(throwError(() => new Error('Error loading items')));
+    (itemServiceMock.getItem as jest.Mock).mockReturnValue(throwError(() => new Error('Error loading items')));
     component.loadData(1, 10, 'asc');
     expect(console.error).toHaveBeenCalledWith(PageConstants.ERROR_ITEMS, new Error('Error loading items'));
   });
 
   it('debe actualizar currentSortField y order al cambiar orden', () => {
-    component.onSortChange({ field: 'EXISTENCIAS', order: 'desc' });
-    expect(component.currentSortField).toBe('quantity');
-    expect(component.pagination.order).toBe('desc');
-  });
-
-  it('debe actualizar correctamente el campo de ordenación y el orden cuando se cambie de orden', () => {
     component.onSortChange({ field: 'EXISTENCIAS', order: 'desc' });
     expect(component.currentSortField).toBe('quantity');
     expect(component.pagination.order).toBe('desc');
@@ -121,12 +143,13 @@ describe('ItemComponent', () => {
       brand: 1
     };
     component.onFormSubmit(itemRequest);
-    expect(itemService.createItem).toHaveBeenCalledWith(itemRequest);
+    expect(itemServiceMock.createItem).toHaveBeenCalledWith(itemRequest);
   });
 
   it('debe manejar errores al crear un ítem', () => {
     jest.spyOn(console, 'error').mockImplementation();
-    itemService.createItem.mockReturnValue(throwError(() => new Error('Create item error')));
+    (itemServiceMock.createItem as jest.Mock).mockReturnValue(throwError(() => new Error('Create item error')));
+  
     component.onFormSubmit({
       name: 'ErrorItem',
       description: 'ErrorDesc',
@@ -135,8 +158,18 @@ describe('ItemComponent', () => {
       category: [1],
       brand: 1
     });
-    expect(console.error).toHaveBeenCalledWith('Error en createItem:', new Error('Create item error'));
+  
+    const errorCalls = (console.error as jest.Mock).mock.calls;
+    console.log("Llamadas a console.error:", errorCalls);
+  
+    const errorMessageFound = errorCalls.some(call => 
+      call.some((arg: unknown) => typeof arg === 'string' && arg.includes('Error en createItem')) &&
+      call.some((arg: unknown) => arg instanceof Error && arg.message === 'Create item error')
+    );
+  
+    expect(errorMessageFound).toBe(true);
   });
+  
 
   it('debe reiniciar la paginación al cambiar de página', () => {
     component.onPageChange(2);
@@ -147,7 +180,6 @@ describe('ItemComponent', () => {
     jest.spyOn(console, 'error').mockImplementation();
     const invalidData = { name: 'Invalid Data' }; 
     component.onFormSubmit(invalidData as any); 
-
     expect(console.error).toHaveBeenCalledWith("Datos no válidos recibidos en onSubmit:", invalidData);
   });
 

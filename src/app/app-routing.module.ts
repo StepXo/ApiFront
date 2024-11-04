@@ -24,6 +24,9 @@ const routes: Routes = [
   { path: 'auth-required', 
     loadChildren: () => import('./component/page/auth-required/auth-required.module').then(x => x.AuthRequiredModule) 
   },
+  { path: 'role', 
+    loadChildren: () => import('./component/page/role/role.module').then(x => x.RoleModule) 
+  },
   { path: '**', 
     loadChildren:() => import('./component/page/not-found/not-found.module').then(x=>x.NotFoundModule) 
   },

@@ -165,4 +165,51 @@ export class ValidationsService {
     const message = errorMessages['genericError'];
     return typeof message === 'function' ? message(error) : message;
   }
+
+  static validateItem(error: any): string | null {
+    if (error.status === ErrorStatus.Forbidden) {
+      const message = errorMessages['token'];
+      return typeof message === 'function' ? message(error) : message;
+    }
+
+    if (error.status === ErrorStatus.Conflict) {
+      const message = errorMessages['item'];
+      return typeof message === 'function' ? message(error) : message;
+    } 
+    
+    const message = errorMessages['genericError'];
+    return typeof message === 'function' ? message(error) : message;
+  }
+
+  static validateUser(error: any): string | null {
+    if (error.status === ErrorStatus.Conflict) {
+      const message = errorMessages['emailConflict'];
+      return typeof message === 'function' ? message(error) : message;
+    }
+    if (error.status === ErrorStatus.BadRequest) {
+      const message = errorMessages['invalidIdDocument'];
+      return typeof message === 'function' ? message(error) : message;
+    }
+    const message = errorMessages['genericError'];
+    return typeof message === 'function' ? message(error) : message;
+  }
+
+  static validateRole(error: any): string | null {
+    if (error.status === ErrorStatus.NotFound) {  
+      const message = errorMessages['userNotFound'];
+      return typeof message === 'function' ? message(error) : message;
+    }
+    const message = errorMessages['genericError'];
+    return typeof message === 'function' ? message(error) : message;
+  }
+
+  static validateLogin(error: any): string | null {
+    if (error.status === ErrorStatus.Unauthorized) {
+      const message = errorMessages['badCredentials'];
+      return typeof message === 'function' ? message(error) : message;
+    }
+    const message = errorMessages['genericError'];
+    return typeof message === 'function' ? message(error) : message;
+  }
+
 }
