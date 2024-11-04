@@ -40,7 +40,6 @@ export class RegisterComponent {
     private readonly authPipe: AuthPipe,
     private readonly router: Router,
     private readonly roleDataService: RoleDataService,
-    private readonly validationsService: ValidationsService
   ) {
     this.isAdmin = this.authService.getRole() === 'ROLE_ADMIN';
 

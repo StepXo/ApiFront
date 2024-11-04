@@ -212,4 +212,11 @@ export class ValidationsService {
     return typeof message === 'function' ? message(error) : message;
   }
 
+  static validateSupply(error: any): string | null {
+    if (error.status === ErrorStatus.NotFound) {
+      const message = errorMessages['item'];
+      return typeof message === 'function' ? message(error) : message;
+    }
+    const message = errorMessages['genericError'];
+    return typeof message === 'function' ? message(error) : message;  }
 }

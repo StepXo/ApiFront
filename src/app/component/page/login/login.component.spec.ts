@@ -62,7 +62,7 @@ describe('LoginComponent', () => {
     expect(component.formFieldsConfig[1]).toEqual({
       name: 'password',
       label: 'Contraseña',
-      type: 'text',
+      type: 'password',
       size: EnumSize.Medium,
       validations: {
         type: 'string',

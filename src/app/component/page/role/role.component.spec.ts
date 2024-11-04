@@ -3,6 +3,7 @@ import { RoleComponent } from './role.component';
 import { AuthService } from 'src/app/shared/service/auth/auth.service';
 import { AuthPipe } from 'src/app/shared/service/pipe/auth-pipe.pipe';
 import { RoleDataService } from 'src/app/shared/service/role/role-data.service';
+import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { RoleEnum } from 'src/app/shared/models/roleEnum';
 
@@ -12,10 +13,11 @@ describe('RoleComponent', () => {
   let authServiceMock: jest.Mocked<AuthService>;
   let authPipeMock: jest.Mocked<AuthPipe>;
   let roleDataServiceMock: jest.Mocked<RoleDataService>;
+  let routerMock: jest.Mocked<Router>;
 
   beforeEach(async () => {
     authServiceMock = {
-      getRole: jest.fn().mockReturnValue('ROLE_ADMIN'),
+      getRole: jest.fn().mockReturnValue('ROLE_ADMIN'), // Configuración por defecto
       setRole: jest.fn()
     } as unknown as jest.Mocked<AuthService>;
 
@@ -25,12 +27,17 @@ describe('RoleComponent', () => {
 
     roleDataServiceMock = {} as jest.Mocked<RoleDataService>;
 
+    routerMock = {
+      navigate: jest.fn()
+    } as unknown as jest.Mocked<Router>;
+
     await TestBed.configureTestingModule({
       declarations: [RoleComponent],
       providers: [
         { provide: AuthService, useValue: authServiceMock },
         { provide: AuthPipe, useValue: authPipeMock },
-        { provide: RoleDataService, useValue: roleDataServiceMock }
+        { provide: RoleDataService, useValue: roleDataServiceMock },
+        { provide: Router, useValue: routerMock }
       ]
     }).compileComponents();
 
@@ -69,7 +76,6 @@ describe('RoleComponent', () => {
     expect(authServiceMock.setRole).toHaveBeenCalledWith({ id: validData.id, role: roleName });
     expect(component.errorMessage).toBeNull();
   });
-  
 
   it('should set errorMessage on role modification failure', () => {
     const validData = { id: 123, role: [2] };
@@ -94,5 +100,26 @@ describe('RoleComponent', () => {
     expect(roleMapping[1]).toBe(RoleEnum.USER);
     expect(roleMapping[2]).toBe(RoleEnum.ADMIN);
     expect(roleMapping[3]).toBe(RoleEnum.WAREHOUSE_AUX);
+  });
+
+  describe('when the user is not an admin', () => {
+    beforeEach(() => {
+      authServiceMock.getRole.mockReturnValue('ROLE_USER');
+      fixture = TestBed.createComponent(RoleComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    });
+
+    it('should navigate away if the user is not an admin', () => {
+      component.ngOnInit();
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/home']);
+    });
+
+    it('should not add admin-specific fields for a non-admin user', () => {
+      expect(component.isAdmin).toBe(false);
+      expect(component.formFieldsConfig.length).toBe(2);
+      const clientButton = component.formFieldsConfig.find(field => field.name === 'role');
+      expect(clientButton).toBeTruthy();
+    });
   });
 });

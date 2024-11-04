@@ -240,4 +240,16 @@ describe('ValidationsService', () => {
       });
     });
   });
+
+  describe('validateSupply', () => {
+    it('should return correct message for status ErrorStatus.NotFound', () => {
+      const error = { status: ErrorStatus.NotFound };
+      expect(ValidationsService.validateSupply(error)).toBe(errorMessages['item']);
+    });
+
+    it('should return generic error message for unknown status', () => {
+      const error = { status: 500 };
+      expect(ValidationsService.validateSupply(error)).toBe(errorMessages['genericError']);
+    });
+  });
 });

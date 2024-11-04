@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { EnumSize } from 'src/app/shared/constant/enumSize';
 import { ButtonConfig } from 'src/app/shared/models/buttonConfig';
 import { FormFieldConfig } from 'src/app/shared/models/formFieldConfig';
@@ -31,6 +32,7 @@ export class RoleComponent {
   constructor(
     private readonly authService: AuthService,
     private readonly authPipe: AuthPipe,
+    private readonly router: Router,
     private readonly roleDataService: RoleDataService
   ) {
     this.isAdmin = this.authService.getRole() === 'ROLE_ADMIN';
@@ -62,6 +64,9 @@ export class RoleComponent {
   }
 
   ngOnInit(): void {
+    if (!this.isAdmin){
+      this.handleNavigation();
+    }
     const userRole = this.authService.getRole();
     this.initializeButtonConfigs(userRole);
   }
@@ -114,5 +119,13 @@ export class RoleComponent {
       Array.isArray((data as any).role) && 
       (data as any).role.length > 0
     );
+  }
+
+  private async handleNavigation(): Promise<void> {
+    try {
+      await this.router.navigate(['/home']);
+    } catch {
+      this.errorMessage = 'Error al redirigir después del registro.';
+    }
   }
 }

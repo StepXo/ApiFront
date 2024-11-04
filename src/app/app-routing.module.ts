@@ -27,6 +27,9 @@ const routes: Routes = [
   { path: 'role', 
     loadChildren: () => import('./component/page/role/role.module').then(x => x.RoleModule) 
   },
+  { path: 'supply', 
+    loadChildren: () => import('./component/page/supply/supply.module').then(x => x.SupplyModule) 
+  },
   { path: '**', 
     loadChildren:() => import('./component/page/not-found/not-found.module').then(x=>x.NotFoundModule) 
   },
